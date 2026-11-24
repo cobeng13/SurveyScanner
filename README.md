@@ -32,13 +32,13 @@ conda activate omrchecker
 .\.venv\Scripts\python.exe -m webapp.worker
 ```
 
-Open `http://127.0.0.1:8008`. Local development stores data in `survey-data/` by default. Local mode accepts connections from loopback peers and provides a single development identity. Use it only on the workstation. Compose always uses Cloudflare Access.
+Open `http://127.0.0.1:8008`. Local development stores data in `survey-data/` by default. Local mode accepts connections from loopback peers and provides a single development identity. Use it only on the workstation. The production container uses Cloudflare Access.
 
 ## Linux apps-server deployment
 
 The stack follows the deployed apps’ Docker Slim, loopback publishing, health check, restart and bounded logging conventions. The separate web and worker containers use the storage pattern from PacheckEssay. The Scheduler runbook establishes the `/opt/apps` deployment directory and the host, container and separate-guest options for Tunnel origins.
 
-The documented existing allocations include 8000–8007. The proposed host port is **8008**, mapped to container port **8000**. Check the current apps-server listeners and Docker mappings before first startup. Use another available port by setting `SURVEY_HOST_PORT` in `.env` and using that port for the Tunnel origin.
+The documented existing allocations include 8000–8007. The image listens on **8008**. The commands below publish it as **127.0.0.1:8008**. Check the current apps-server listeners and Docker mappings before first startup. If you need another host port, change the host side of `--publish` and use that port for the Tunnel origin.
 
 ```bash
 cd /opt/apps
@@ -53,12 +53,31 @@ sudo ss -ltn 'sport = :8008'
 Set `SURVEY_PUBLIC_ORIGIN`, `SURVEY_CF_TEAM` and `SURVEY_CF_AUD` in `.env` using the Access application for this hostname. Set Cloudflare Access to allow only authorized staff or groups. Use the same trusted deployment account for build, updates and backup operations. Then run:
 
 ```bash
-docker compose config --quiet
-docker compose build web
-docker compose up -d --build
-docker compose ps
+docker build -t survey-scanner:local .
+docker network create survey-scanner
+docker volume create survey-scanner-data
+```
+
+Start both containers using the same image and data volume.
+
+```bash
+docker run -d --name survey-scanner-web --restart unless-stopped --init \
+  --network survey-scanner --publish 127.0.0.1:8008:8008 \
+  --env-file .env --env SURVEY_AUTH=cloudflare \
+  --volume survey-scanner-data:/data --read-only --tmpfs /tmp:size=256m,mode=1777 \
+  --cap-drop ALL --security-opt no-new-privileges --pids-limit 160 --memory 768m \
+  --stop-timeout 45 --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 survey-scanner:local
+
+docker run -d --name survey-scanner-worker --restart unless-stopped --init \
+  --network none --no-healthcheck --env-file .env \
+  --volume survey-scanner-data:/data --read-only --tmpfs /tmp:size=64m,mode=1777 \
+  --cap-drop ALL --security-opt no-new-privileges --pids-limit 160 --memory 1500m \
+  --stop-timeout 30 --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 \
+  survey-scanner:local python -m webapp.worker
+
 curl -fsS http://127.0.0.1:8008/health
-docker compose logs --tail=100 web worker
+docker logs --tail 100 survey-scanner-web
+docker logs --tail 100 survey-scanner-worker
 ```
 
 The `survey-scanner-web` and `survey-scanner-worker` containers restart with the `unless-stopped` policy. The worker has no network and processes locally. The web container fetches only public signing keys from the configured Cloudflare team hostname for Access verification. Access verifies a signed RS256 assertion, issuer, audience and token lifetime. Batch access is restricted to its uploader’s Access subject. Review actions store that subject as the reviewer identifier. A distinct account cannot see, change or download another user’s batch. Administrative backup and restore occur at the server level.
@@ -66,7 +85,7 @@ The `survey-scanner-web` and `survey-scanner-worker` containers restart with the
 ### Cloudflare and proxies
 
 - With a host-installed Tunnel on apps-server, set the origin service to `http://127.0.0.1:8008`.
-- With a Docker-based connector on that host, attach the connector to the private `survey-scanner` network through its own deployment configuration and target `http://survey-scanner-web:8000`.
+- With a Docker-based connector on that host, attach the connector to the private `survey-scanner` network through its own deployment configuration and target `http://survey-scanner-web:8008`.
 - With a connector in another Proxmox guest, bind the port to the specific apps-server LAN IP, permit only the connector’s IP through the host firewall and target the configured LAN address and port. Keep the origin off the public network.
 - Preserve the `Cf-Access-Jwt-Assertion` header on every protected request. Restrict forwarded headers to the actual proxy addresses seen by Uvicorn. Set `SURVEY_PUBLIC_ORIGIN` to the public scheme and authority without a path. For a proxy that strips a URL prefix, set `SURVEY_ROOT_PATH` to that prefix. A dedicated HTTPS hostname at the root is the deployment default.
 - Pass upload bodies of at least the configured file limit plus multipart overhead. Cloudflare or another proxy can have a lower cap. Bypass caching for survey pages and file routes. Verify upload, preview, polling, review submission and downloads through the actual proxy after the container smoke test.
@@ -78,13 +97,13 @@ Cloudflare documents the issuer, audience and signing-key setup in [Validate JWT
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `SURVEY_PUBLIC_ORIGIN` | Required in Compose | External HTTPS origin used for same-origin form validation. |
-| `SURVEY_CF_TEAM` | Required in Compose | Access team hostname, such as `team.cloudflareaccess.com`. |
-| `SURVEY_CF_AUD` | Required in Compose | Access application audience tag. |
+| `SURVEY_PUBLIC_ORIGIN` | Required in production | External HTTPS origin used for same-origin form validation. |
+| `SURVEY_CF_TEAM` | Required in production | Access team hostname, such as `team.cloudflareaccess.com`. |
+| `SURVEY_CF_AUD` | Required in production | Access application audience tag. |
 | `SURVEY_BIND_ADDRESS` | `127.0.0.1` | Host address Docker publishes. |
 | `SURVEY_HOST_PORT` | `8008` | Published host port. |
 | `SURVEY_ROOT_PATH` | Empty | External path prefix stripped by the reverse proxy. |
-| `SURVEY_TRUSTED_PROXY_IPS` | `127.0.0.1` | Comma-separated trusted Uvicorn proxy peers. |
+| `FORWARDED_ALLOW_IPS` | `127.0.0.1` | Comma-separated trusted Uvicorn proxy peers for plain Docker. |
 | `SURVEY_MAX_UPLOAD_MB` | `50` | Maximum file size in MiB, configurable from 1–500. |
 | `SURVEY_MAX_PAGES` | `40` | Maximum PDF pages, configurable from 1–120. |
 | `SURVEY_MAX_RASTER_MP` | `420` | Maximum total 300 dpi raster area per PDF, in megapixels. |
@@ -94,9 +113,11 @@ Cloudflare documents the issuer, audience and signing-key setup in [Validate JWT
 | `SURVEY_WEB_MEMORY` | `768m` | Web container memory limit. |
 | `SURVEY_WORKER_MEMORY` | `1500m` | Worker container memory limit. |
 | `SURVEY_VOLUME_NAME` | `survey-scanner-data` | Named volume used by both containers. |
-| `SURVEY_DATA` | `/data` in Compose | Data root. Defaults to `survey-data/` in local Python. |
+| `SURVEY_DATA` | `/data` in Docker | Data root. Defaults to `survey-data/` in local Python. |
 | `SURVEY_AUTH` | `cloudflare` | Set to `local` for loopback development only. |
 | `SURVEY_ENGINE_PYTHON` | Current interpreter | Optional Windows development override for a separate engine interpreter. |
+
+The plain Docker commands set the bind address, host port, temporary space, memory and volume in the run flags. The corresponding `SURVEY_*` deployment variables in `.env.example` apply to the optional Compose file.
 
 The PDF reader caps 300 dpi raster area at 14 million pixels per page and uses the configured batch-wide raster limit. Adjust the proxy, web temporary capacity and memory if raising upload limits. The engine loads all page rasters in one invocation, so test representative jobs before raising concurrency or raster limits.
 
@@ -123,37 +144,39 @@ For a consistent backup, pick a maintenance window and allow active recognition 
 ```bash
 backup_dir=/path/to/restricted/survey-backups
 backup_file="survey-$(date -u +%Y%m%dT%H%M%SZ).tar.gz"
-docker compose stop
-docker compose run --rm --no-deps -v "$backup_dir:/backup" --entrypoint /bin/sh worker \
+docker stop survey-scanner-web survey-scanner-worker
+docker run --rm --network none --no-healthcheck --volume survey-scanner-data:/data:ro \
+  --volume "$backup_dir:/backup" --entrypoint /bin/sh survey-scanner:local \
   -c 'umask 077 && tar -czf "/backup/$1" -C /data .' sh "$backup_file"
-docker compose up -d
+docker start survey-scanner-web survey-scanner-worker
 ```
 
 For restoration, stop the stack. Choose a new volume unique to this recovery. The archive includes scans and the database. Keep the previous volume until the restored app has passed its health check and an authorized reviewer has opened a batch.
 
 ```bash
-docker compose stop
-export SURVEY_VOLUME_NAME=survey-scanner-restored
-docker compose run --rm --no-deps -v "$backup_dir:/backup:ro" --entrypoint tar worker \
+docker stop survey-scanner-web survey-scanner-worker
+docker volume create survey-scanner-restored
+docker run --rm --network none --no-healthcheck --volume survey-scanner-restored:/data \
+  --volume "$backup_dir:/backup:ro" --entrypoint tar survey-scanner:local \
   -xzf "/backup/$backup_file" -C /data
-docker compose run --rm --no-deps --entrypoint python worker -c \
+docker run --rm --network none --no-healthcheck --volume survey-scanner-restored:/data \
+  --entrypoint python survey-scanner:local -c \
   "import sqlite3; db=sqlite3.connect('/data/database/survey.sqlite3'); assert db.execute('PRAGMA quick_check').fetchone()==('ok',)"
-docker compose up -d
+docker rm survey-scanner-web survey-scanner-worker
 ```
 
-After checking the restore, set the restored name permanently in `.env` if it is the intended production volume. Protect and retain backups under institutional policy. Copy the entire volume, including any SQLite sidecar files. Never use `docker compose down --volumes` as a routine stop or update.
+Repeat the two container startup commands with `survey-scanner-restored:/data` in both volume flags. Protect and retain backups under institutional policy. Copy the entire volume, including any SQLite sidecar files.
 
 To update, back up the volume, pull the reviewed revision, build while the active image is running, and recreate the services using the same `.env` and volume.
 
 ```bash
 git pull --ff-only
-docker compose build web
-docker compose up -d
-curl -fsS http://127.0.0.1:8008/health
-docker compose logs --tail=100 web worker
+docker build -t survey-scanner:local .
+docker stop survey-scanner-web survey-scanner-worker
+docker rm survey-scanner-web survey-scanner-worker
 ```
 
-Use `docker compose stop` to stop the application. Review the image and volume before rolling back a version with schema changes.
+Repeat the two container startup commands with the existing data volume, then check health and logs. Use `docker stop survey-scanner-web survey-scanner-worker` to stop the application. Review the image and volume before rolling back a version with schema changes.
 
 ## Summary and audit
 
@@ -176,8 +199,9 @@ $env:SURVEY_OMR_SOURCE = 'C:\OCR\OMRChecker'
 For a Linux image recognition smoke test, mount a restricted directory holding only the approved physical fixture and its baseline CSV. The verifier checks both file hashes, runs the worker in scratch storage, compares all 41 response values and checks the overlay. The mounts below are read-only. Scratch results are automatically discarded.
 
 ```bash
-docker compose run --rm --no-deps -v /absolute/path/to/regression-fixtures:/fixtures:ro \
-  worker python -m webapp.verify_baseline /fixtures/PhysicalTest1.pdf /fixtures/Results_04PM.csv
+docker run --rm --network none --no-healthcheck \
+  --volume /absolute/path/to/regression-fixtures:/fixtures:ro \
+  survey-scanner:local python -m webapp.verify_baseline /fixtures/PhysicalTest1.pdf /fixtures/Results_04PM.csv
 ```
 
 Then test through the protected hostname with the same scan and a multipage batch. Verify the form checksum, exports and flags, then use a disposable batch to test interruption, retry, restart and container recreation with the same volume. See [validation results](VALIDATION.md) for executed checks.
@@ -185,8 +209,8 @@ Then test through the protected hostname with the same scan and a multipage batc
 ## Troubleshooting and template versioning
 
 - **PDF rejected.** Open it locally, unlock it if needed, rescan or re-export as a regular PDF, and check the configured limits and proxy cap.
-- **No recognizable responses.** Check that the PDF is upright, that each page contains one form, and that all four fiducials are fully visible. Confirm that scaling was disabled when printing. Review page warnings and `docker compose logs worker`.
-- **Queued jobs stay queued.** Check `docker compose ps worker`, worker logs and volume ownership. A single worker instance should own the volume lock.
+- **No recognizable responses.** Check that the PDF is upright, that each page contains one form, and that all four fiducials are fully visible. Confirm that scaling was disabled when printing. Review page warnings and `docker logs survey-scanner-worker`.
+- **Queued jobs stay queued.** Check `docker ps -a --filter name=survey-scanner-worker`, worker logs and volume ownership. A single worker instance should own the volume lock.
 - **An attempt was interrupted.** Restart the worker if necessary, then retry the original scan from batch results. Verify successful pages before exporting.
 - **Access fails.** Confirm the actual hostname, Access audience, sign-in policy, team hostname, origin URL and assertion header. The browser must use the configured public origin for edits and uploads.
 

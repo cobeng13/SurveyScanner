@@ -22,7 +22,7 @@ COPY webapp/ ./webapp/
 RUN python -c "from webapp.config import Settings; Settings()"
 
 USER 10001:10001
-EXPOSE 8000
+EXPOSE 8008
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health', timeout=3).close()"]
-CMD ["uvicorn", "webapp.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--no-access-log", "--timeout-graceful-shutdown", "35", "--limit-concurrency", "64"]
+    CMD ["python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8008/health', timeout=3).close()"]
+CMD ["uvicorn", "webapp.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8008", "--no-access-log", "--timeout-graceful-shutdown", "35", "--limit-concurrency", "64"]
