@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir --disable-pip-version-check --only-binary=:all: -
     && python -c "import cv2, numpy, pymupdf; assert cv2.__version__ == '4.12.0' and numpy.__version__ == '2.2.6'; assert any(line.split() == ['GUI:', 'NONE'] for line in cv2.getBuildInformation().splitlines())" \
     && useradd --create-home --uid 10001 survey
 
-COPY LICENSE main.py ./
+COPY LICENSE main.py Course_feedback_summary.docx ./
 COPY src/ ./src/
 COPY webapp/ ./webapp/
 RUN python -c "from webapp.config import Settings; Settings()"

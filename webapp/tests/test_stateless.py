@@ -1,16 +1,19 @@
 from csv import DictReader
 from dataclasses import replace
-from io import StringIO
+from io import BytesIO, StringIO
 import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import patch
+from zipfile import ZipFile
 
 from fastapi.testclient import TestClient
+from lxml import etree
 
 from webapp.config import Settings
-from webapp.stateless import create_app
+from webapp.stateless import SUMMARY_TEMPLATE, create_app
+from webapp.summary_report import NS, rated
 
 SOURCE = Path(os.environ["SURVEY_OMR_SOURCE"]) if os.getenv("SURVEY_OMR_SOURCE") else None
 
@@ -56,3 +59,44 @@ class CsvOnlyTests(TestCase):
             for key in settings.bundle.fields:
                 self.assertEqual(rows[0][key], expected[key], key)
             self.assertEqual(list(root.iterdir()), [])
+
+
+    def test_mean_interpretation_boundaries(self):
+        for count, expected in ((175, "Strongly Disagree"), (176, "Disagree"),
+                                (250, "Disagree"), (251, "Agree"),
+                                (325, "Agree"), (326, "Strongly Agree")):
+            values = [1] * (400 - count) + [4] * (count - 100)
+            self.assertEqual(rated(values), (f"{count / 100:.2f}", expected))
+        self.assertEqual(rated([]), ("", ""))
+
+    def test_word_summary_from_physical_scan(self):
+        if SOURCE is None:
+            self.skipTest("Set SURVEY_OMR_SOURCE to the validated OMRChecker checkout")
+        survey = SOURCE / "lpu-survey"
+        scan = (survey / "scans" / "PhysicalTest1.pdf").read_bytes()
+        with (survey / "results" / "Results" / "Results_04PM.csv").open(encoding="utf-8-sig") as stream:
+            expected = next(DictReader(stream))
+        with TestClient(create_app(), base_url="http://192.168.0.226:8008") as client:
+            result = client.post("/process", files={"scan": ("test.pdf", scan)}, data={
+                "output": "summary", "program": "Pharmacy", "semester": "2nd",
+                "course": "Pharmacology and Therapeutics", "school_year": "2026–2027",
+            })
+        self.assertEqual(result.status_code, 200, result.text if result.status_code != 200 else None)
+        self.assertIn("course-feedback-summary.docx", result.headers["content-disposition"])
+        with ZipFile(BytesIO(result.content)) as doc, ZipFile(SUMMARY_TEMPLATE) as template:
+            self.assertEqual(doc.namelist(), template.namelist())
+            self.assertEqual([name for name in doc.namelist() if doc.read(name) != template.read(name)],
+                             ["word/document.xml"])
+            body = etree.fromstring(doc.read("word/document.xml")).find("w:body", NS)
+        paragraph_text = ["".join(p.xpath(".//w:t/text()", namespaces=NS)) for p in body.findall("w:p", NS)]
+        self.assertTrue(any("Pharmacology and Therapeutics" in p for p in paragraph_text))
+        self.assertIn("Mr. Aaron Dell A. Cobeng, RPh, MA ELM", paragraph_text)
+        self.assertIn("Department Chair", paragraph_text)
+        self.assertTrue(any("Overall rating" in p for p in paragraph_text))
+        fixed, cilo = body.findall("w:tbl", NS)
+        q01 = fixed.findall("w:tr", NS)[2].findall("w:tc", NS)[1]
+        self.assertEqual("".join(q01.xpath(".//w:t/text()", namespaces=NS)), f"{int(expected['Q01']):.2f}")
+        cilo01 = cilo.findall("w:tr", NS)[1].findall("w:tc", NS)[1:]
+        self.assertEqual(["".join(cell.xpath(".//w:t/text()", namespaces=NS)) for cell in cilo01],
+                         [str(int(expected["CILO01"] == choice))
+                          for choice in ("Attained", "Needs Improvement", "Not Attained")])

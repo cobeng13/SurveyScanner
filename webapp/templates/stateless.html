@@ -21,15 +21,39 @@
       </ul>
     </header>
     <section class="panel">
-      <h2>Convert scanned surveys to CSV</h2>
-      <p class="muted">Upload a PDF of up to {{ limits.max_mb }} MiB and {{ limits.max_pages }} pages. Keep this tab open until the CSV downloads.</p>
+      <h2>Process scanned surveys</h2>
+      <p class="muted">Upload a PDF of up to {{ limits.max_mb }} MiB and {{ limits.max_pages }} pages. Keep this tab open until your file downloads.</p>
       {% if error %}<p class="notice error" role="alert">{{ error }}</p>{% endif %}
       <form action="{{ path }}/process" method="post" enctype="multipart/form-data">
         <div class="drop">
           <label for="scan">Scanned questionnaire PDF</label>
           <input id="scan" name="scan" type="file" accept="application/pdf,.pdf" required>
         </div>
-        <div class="actions"><button type="submit">Process and Download CSV</button></div>
+        <fieldset>
+          <legend>Word summary details</legend>
+          <div class="form-grid">
+            <label>Program
+              <select name="program" required>
+                <option value="">Select a program</option>
+                {% for program, chair in program_chairs.items() %}
+                  <option value="{{ program }}">{{ program }} — {{ chair }}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <label>Semester
+              <select name="semester" required>
+                <option value="">Select a semester</option>
+                {% for semester in semesters %}<option>{{ semester }}</option>{% endfor %}
+              </select>
+            </label>
+            <label>Course / Subject<input name="course" maxlength="120" required></label>
+            <label>School year<input name="school_year" maxlength="30" required></label>
+          </div>
+        </fieldset>
+        <div class="actions">
+          <button type="submit" name="output" value="csv" formnovalidate>Process and Download CSV</button>
+          <button type="submit" name="output" value="summary" class="secondary">Generate Completed Form (Word)</button>
+        </div>
       </form>
     </section>
   </main>

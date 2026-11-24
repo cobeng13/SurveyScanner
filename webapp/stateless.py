@@ -1,4 +1,4 @@
-"""Process an uploaded survey and return CSV without creating a batch record."""
+"""Process an uploaded survey and return a CSV or Word summary without creating a batch record."""
 
 import csv
 from io import StringIO
@@ -19,14 +19,17 @@ from starlette.datastructures import Headers
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 
-from .config import Settings
+from .config import ROOT, Settings
 from .csvutil import spreadsheet_value
+from .programs import PROGRAM_CHAIRS
+from .summary_report import SEMESTERS, generate_report, read_metadata
 from .uploads import stage_pdf
 from .worker import normalize, run_engine
 
 WEB = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=WEB / "templates")
 LOG = logging.getLogger("survey.stateless")
+SUMMARY_TEMPLATE = ROOT / "Course_feedback_summary.docx"
 
 
 class UploadLimit:
@@ -68,6 +71,7 @@ def create_app(settings=None):
     def page(request, status=200, error=None):
         return TEMPLATES.TemplateResponse(request, "stateless.html", {
             "path": settings.root_path, "limits": settings, "error": error,
+            "program_chairs": PROGRAM_CHAIRS, "semesters": SEMESTERS,
         }, status_code=status, headers={"Cache-Control": "no-store"})
 
     @app.exception_handler(StarletteHTTPException)
@@ -88,7 +92,7 @@ def create_app(settings=None):
                             filename="LPU-Course-Feedback-Survey.pdf")
 
     @app.post("/process")
-    async def scan_to_csv(request: Request):
+    async def process_scan(request: Request):
         origin = request.headers.get("origin")
         if origin:
             if settings.public_origin:
@@ -106,19 +110,27 @@ def create_app(settings=None):
         if not slots.acquire(blocking=False):
             raise HTTPException(503, "Another scan is processing. Try again shortly.")
         try:
-            async with request.form(max_files=1, max_fields=0) as form:
-                result = await run_in_threadpool(process_upload, settings, form.get("scan"))
+            async with request.form(max_files=1, max_fields=5, max_part_size=2048) as form:
+                output = form.get("output", "csv")
+                if output not in ("csv", "summary"):
+                    raise HTTPException(422, "Choose CSV or Word summary.")
+                metadata = read_metadata(form) if output == "summary" else None
+                result = await run_in_threadpool(process_upload, settings, form.get("scan"), metadata)
         finally:
             slots.release()
-        return Response(result, media_type="text/csv", headers={
-            "Content-Disposition": 'attachment; filename="survey-responses.csv"',
+        media_type, filename = ("text/csv", "survey-responses.csv")
+        if metadata is not None:
+            media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            filename = "course-feedback-summary.docx"
+        return Response(result, media_type=media_type, headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
             "Cache-Control": "no-store",
         })
 
     return app
 
 
-def process_upload(settings, upload):
+def process_upload(settings, upload, metadata=None):
     with TemporaryDirectory(prefix="survey-scan-") as directory:
         folder = Path(directory)
         staged = folder / "input"
@@ -136,6 +148,8 @@ def process_upload(settings, upload):
             raise HTTPException(422, "Recognition could not finish. Check the scan and try again.")
 
         page_results = normalize({"id": "upload", "total": total}, settings.bundle, output, folder)
+        if metadata is not None:
+            return generate_report(SUMMARY_TEMPLATE, settings.bundle, page_results, metadata)
         return format_csv(filename, page_results, settings.bundle)
 
 

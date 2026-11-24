@@ -4,6 +4,7 @@
 !constraints-py310.txt
 !LICENSE
 !main.py
+!Course_feedback_summary.docx
 !src/
 !src/**
 !webapp/

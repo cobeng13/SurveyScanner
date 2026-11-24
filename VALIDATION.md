@@ -1,5 +1,9 @@
 # Validation results
 
+## Word summary
+
+Four focused web tests passed, including the physical-scan CSV and DOCX downloads, all six verbal interpretation boundaries, the first CILO vote counts, the GiftToExam chair mapping, and the unchanged template package parts. Word rendering confirmed two 8.5 × 13 inch pages with a long course title, all four interpretations and eight populated CILOs. A Python 3.10 Linux wheel was retrieved for the pinned lxml dependency. The updated Docker image has not yet been tested on apps-server.
+
 ## CSV-only deployment
 
 The direct PDF-to-CSV route matched all 41 fields in the retained physical baseline and all 82 fields in the retained two-page synthetic scan. Tests confirmed the byte-identical PDF download, invalid file and size rejection, expected page numbers, absence of history routes, and temporary-file cleanup. The Docker and Compose configurations use one service with temporary storage. The updated image still needs a runtime smoke test on apps-server.

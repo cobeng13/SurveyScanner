@@ -12,8 +12,9 @@ PyMuPDF==1.28.2
 rich==15.0.0
 screeninfo==0.8.1
 
-# CSV-only web application.
+# Web application and Word summary.
 fastapi==0.158.1
 Jinja2==3.1.6
+lxml==6.1.1
 python-multipart==0.0.26
 uvicorn==0.41.0
