@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Batch Results | Course Feedback Survey Processor{% endblock %}
+{% block content %}
+<section class="panel">
+  <a class="quiet" href="{{ path }}/history">← Processing History</a>
+  <div class="section-heading">
+    <h1>{{ batch.metadata.title }}</h1>
+    <span class="status" id="job-state">{{ batch.status }}</span>
+  </div>
+  <p class="muted">{{ batch.metadata.program }} · {{ batch.metadata.semester }} · {{ batch.metadata.academic_year }}</p>
+  <details>
+    <summary>Batch information</summary>
+    <dl class="metadata">
+      {% for field, label in metadata_labels.items() %}
+        {% if batch.metadata[field] %}<dt>{{ label }}</dt><dd>{{ batch.metadata[field] }}</dd>{% endif %}
+      {% endfor %}
+      <dt>Batch ID</dt><dd>{{ batch.id }}</dd>
+      <dt>Source PDF</dt><dd>{{ batch.filename }} ({{ batch.size|filesizeformat(true) }})</dd>
+      <dt>Template version</dt><dd>{{ batch.template }}</dd>
+      <dt>Applicable CILOs</dt><dd>{{ batch.metadata.cilos }}</dd>
+      <dt>Submitted (UTC)</dt><dd>{{ batch.created }}</dd>
+    </dl>
+  </details>
+  {% if batch.message %}<p class="notice" role="status">{{ batch.message }}</p>{% endif %}
+  {% if batch.status in active %}
+    <div class="notice" id="job-progress" data-url="{{ path }}/status/{{ batch.id }}" data-status="{{ batch.status }}" role="status">
+      {{ batch.total }} pages · {{ batch.status }}. You can close this page while the worker runs.
+    </div>
+  {% endif %}
+  <div class="actions">
+    {% if pages %}<a class="button" href="{{ path }}/batches/{{ batch.id }}/review{% if summary.unreviewed %}?pending=true{% endif %}">Review Questionnaires</a>{% endif %}
+    <a class="button secondary" href="{{ path }}/batches/{{ batch.id }}/file/original">Download original scan</a>
+    {% if batch.status in ['Failed', 'Interrupted'] %}
+    <form action="{{ path }}/batches/{{ batch.id }}/retry" method="post">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><button>Retry recognition</button>
+    </form>
+    {% endif %}
+  </div>
+</section>
+{% if batch.status not in active %}
+<section class="panel">
+  <h2>Processing results</h2>
+  <dl class="metrics">
+    {% for label, value in [('Uploaded pages', batch.total), ('Recognized pages', summary.recognized),
+      ('Failed pages', summary.failed), ('Awaiting review', summary.unreviewed), ('Reviewed', summary.reviewed),
+      ('Manually corrected', summary.corrected), ('Failed or excluded', summary.excluded),
+      ('Blank active responses', summary.blank), ('Flagged active responses', summary.ambiguous_responses),
+      ('Pages flagged with multiple marks', summary.ambiguous_pages),
+      ('Unresolved pages', summary.unresolved), ('Processing time', summary.duration ~ ' s')] %}
+      <div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+    {% endfor %}
+  </dl>
+  {% if pages %}
+  <p class="muted">Verify recognition outputs against the scans. Item tables count unresolved responses as missing.</p>
+  <details>
+    <summary>Page results and recognition exceptions</summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>PDF page</th><th>Processing</th><th>Review</th><th>Warnings</th></tr></thead>
+        <tbody>{% for p in pages %}
+          <tr>
+            <td><a href="{{ path }}/batches/{{ batch.id }}/review?page={{ p.page }}">{{ p.page }}</a></td>
+            <td>{{ p.status }}</td><td>{{ p.review }}{% if p.corrections %} · Manually corrected{% endif %}</td>
+            <td>{{ p.warnings.get('_page', '—') }}</td>
+          </tr>
+        {% endfor %}</tbody>
+      </table>
+    </div>
+  </details>
+  {% endif %}
+</section>
+<section class="panel">
+  <div class="section-heading"><h2>Course feedback summary</h2>
+    <span class="status{% if summary.provisional %} provisional{% endif %}">{% if summary.provisional %}Provisional{% else %}Finalized{% endif %}</span>
+  </div>
+  <p>{{ summary.included }} included questionnaires · {{ summary.unreviewed }} unreviewed included · {{ summary.excluded }} failed or excluded.</p>
+  <p class="muted">{{ method }}</p>
+  <div class="actions">
+    <a class="button" href="{{ path }}/batches/{{ batch.id }}/file/csv">Download CSV</a>
+    <a class="button secondary" href="{{ path }}/batches/{{ batch.id }}/file/xlsx">Download Excel</a>
+    {% if latest_has_csv %}<a class="quiet" href="{{ path }}/batches/{{ batch.id }}/file/machine">Original machine CSV</a>{% endif %}
+    {% if batch.attempt %}<a class="quiet" href="{{ path }}/batches/{{ batch.id }}/file/audit">Machine audit files</a>{% endif %}
+  </div>
+  {% if summary.included %}
+  <dl class="metrics">
+    {% for label, score in [('Overall mean', summary.overall)] + summary.sections %}
+      <div><dt>{{ label }}</dt><dd>{{ '%.2f'|format(score) if score is not none else '—' }}</dd></div>
+    {% endfor %}
+  </dl>
+  <details>
+    <summary>Item and CILO response distributions</summary>
+    <div class="scroll"><table>
+      <thead><tr><th>Item</th><th>Valid</th><th>Missing</th><th>Frequencies (% of valid)</th><th>Mean</th></tr></thead>
+      <tbody>{% for item in summary['items'] %}
+        <tr><td><strong>{{ item.key }}</strong> {{ item.statement or '' }}</td><td>{{ item.valid }}</td>
+          <td>{{ item.missing }}</td><td>{% for label, n, proportion in item.frequencies %}
+            <span class="frequency">{{ label }} · {{ n }}{% if proportion is not none %} ({{ '%.1f'|format(proportion * 100) }}%){% endif %}</span>
+          {% endfor %}</td><td>{{ '%.2f'|format(item.mean) if item.mean is not none else '—' }}</td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+  </details>
+  {% endif %}
+</section>
+{% endif %}
+{% if batch.status != 'Processing' %}<div class="panel">{% include "delete.html" %}</div>{% endif %}
+{% endblock %}

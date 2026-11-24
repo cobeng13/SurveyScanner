@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Review Questionnaires | Course Feedback Survey Processor{% endblock %}
+{% block content %}
+<section class="panel compact">
+  <a class="quiet" href="{{ path }}/batches/{{ batch.id }}">← Batch results</a>
+  <h1>Review Questionnaires</h1>
+  <p class="muted">{{ batch.metadata.title }} · {{ batch.filename }}</p>
+  <div class="actions">
+    <a class="button {{ 'secondary' if pending else '' }}" href="{{ path }}/batches/{{ batch.id }}/review">All pages</a>
+    <a class="button {{ '' if pending else 'secondary' }}" href="{{ path }}/batches/{{ batch.id }}/review?pending=true">Awaiting review</a>
+  </div>
+</section>
+{% if p %}
+<div class="review-grid">
+  <aside class="panel preview" aria-label="Scan and recognition images">
+    <div class="section-heading"><h2>PDF page {{ p.page }} of {{ batch.total }}</h2></div>
+    <nav class="page-nav" aria-label="Respondents">
+      {% if previous %}<a href="{{ path }}/batches/{{ batch.id }}/review?page={{ previous }}{% if pending %}&amp;pending=true{% endif %}">← Previous</a>{% endif %}
+      {% if following %}<a href="{{ path }}/batches/{{ batch.id }}/review?page={{ following }}{% if pending %}&amp;pending=true{% endif %}">Next →</a>{% endif %}
+    </nav>
+    <div class="page-jump">
+      <form action="{{ path }}/batches/{{ batch.id }}/review">
+        {% if pending %}<input type="hidden" name="pending" value="true">{% endif %}
+        <label for="review-page">Go to PDF page</label>
+        <select name="page" id="review-page">{% for row in available %}<option{% if row.page == p.page %} selected{% endif %}>{{ row.page }}</option>{% endfor %}</select>
+        <button class="secondary">Go</button>
+      </form>
+    </div>
+    <details open>
+      <summary>Original scan</summary>
+      <a href="{{ path }}/batches/{{ batch.id }}/file/scan?page={{ p.page }}" target="_blank" rel="noopener">
+        <img alt="Original scan for PDF page {{ p.page }}" src="{{ path }}/batches/{{ batch.id }}/file/scan?page={{ p.page }}">
+      </a>
+    </details>
+    {% if p.overlay %}
+    <details open>
+      <summary>Recognition overlay</summary>
+      <a href="{{ path }}/batches/{{ batch.id }}/file/overlay?page={{ p.page }}" target="_blank" rel="noopener">
+        <img alt="OMRChecker recognition overlay for PDF page {{ p.page }}" src="{{ path }}/batches/{{ batch.id }}/file/overlay?page={{ p.page }}" loading="lazy">
+      </a>
+    </details>
+    {% else %}<p class="muted">Recognition overlay unavailable for this page.</p>{% endif %}
+  </aside>
+  <section class="panel">
+    <h2>Extracted responses</h2>
+    <p class="muted identifier">Respondent {{ p.id }}</p>
+    <p><span class="status">{{ p.status }}</span> <span class="status">{{ p.review }}</span>
+       {% if p.corrections %}<span class="status">Manually corrected</span>{% endif %}</p>
+    {% if p.warnings.get('_page') %}<p class="notice">{{ p.warnings['_page'] }}</p>{% endif %}
+    {% if p.reviewed_at %}<p class="muted">Review updated {{ p.reviewed_at }} UTC.</p>{% endif %}
+    {% if p.status != 'Failed' %}
+    <form action="{{ path }}/batches/{{ batch.id }}/review/{{ p.page }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="version" value="{{ p.version }}">
+      <input type="hidden" name="pending" value="{{ 1 if pending else 0 }}">
+      {% for key in fields %}
+        {% set q = bundle.fields[key] %}
+        {% set machine = p.machine.get(key) %}
+        {% set current = effective(p, key, bundle) %}
+        {% set unresolved = key in p.warnings and key not in p.corrections %}
+        {% if loop.changed(q.section) %}<h3 class="review-section">{{ q.section }}</h3>{% endif %}
+        <div class="answer">
+          <label for="{{ key }}"><strong>{{ key }}</strong>{{ ' ' ~ q.statement if q.statement else ' ' ~ batch.metadata.statements.get(key, '') }}</label>
+          <small>Machine value · {{ ratings[machine] ~ ' (' ~ machine ~ ')' if machine in ratings else machine or 'Blank' }}</small>
+          {% if key in p.warnings %}<small class="warning">{{ p.warnings[key] }}{% if not unresolved %} Resolved in review.{% endif %}</small>{% endif %}
+          {% if key in p.corrections %}<small>Manually corrected</small>{% endif %}
+          <select id="{{ key }}" name="{{ key }}">
+            {% if unresolved %}<option value="__keep" selected>Needs a review decision</option>{% endif %}
+            <option value="__blank"{% if not unresolved and current is none %} selected{% endif %}>Blank / missing</option>
+            {% for choice in bundle.choices(key) %}
+            <option value="{{ choice }}"{% if current == choice %} selected{% endif %}>{{ choice ~ ' — ' ~ ratings[choice] if choice in ratings else choice }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      {% endfor %}
+      <div class="review-save">
+        <label>Review decision
+          <select name="decision">
+            <option value="Reviewed"{% if p.review != 'Excluded' %} selected{% endif %}>Mark as reviewed</option>
+            <option value="Unreviewed">Keep awaiting review</option>
+            <option value="Excluded"{% if p.review == 'Excluded' %} selected{% endif %}>Exclude from summaries and exports</option>
+          </select>
+        </label>
+        <button type="submit">Save review</button>
+      </div>
+    </form>
+    {% else %}
+    <p>This failed page is excluded from the respondent dataset.</p>
+    {% endif %}
+  </section>
+</div>
+{% else %}
+<section class="panel"><p>{{ 'No questionnaires are awaiting review.' if pending else 'No page results are available yet.' }}</p></section>
+{% endif %}
+{% endblock %}

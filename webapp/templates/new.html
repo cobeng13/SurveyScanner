@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel download-panel">
+  <div>
+    <h1>Official Course Feedback Survey</h1>
+    <p>Print single-sided on 8.5 × 13 in. paper at 100% or Actual Size.</p>
+  </div>
+  <a class="button" href="{{ path }}/questionnaire.pdf">Download Course Feedback Survey Form (PDF)</a>
+  <ul class="print-notes">
+    <li>Faculty complete the course information and applicable CILO statements before photocopying.</li>
+    <li>Students fill the appropriate response bubbles.</li>
+    <li>Scan the completed questionnaires at 300 dpi.</li>
+  </ul>
+</section>
+
+<section class="panel">
+  <h2>New Survey Batch</h2>
+  <p class="muted">Use one batch per course or class. Fields marked optional can be left blank.</p>
+  {% if error %}<p class="notice error" role="alert">{{ error }} Select the PDF again before resubmitting.</p>{% endif %}
+  {% set fields = values or {} %}
+  <form action="{{ path }}/batches" method="post" enctype="multipart/form-data" id="batch-form">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="form-grid">
+      <label>Program
+        <select name="program" required>
+          <option value="">Select a program</option>
+          {% for value in programs %}<option{% if fields.get('program') == value %} selected{% endif %}>{{ value }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Course code <span class="optional">Optional</span>
+        <input name="course_code" maxlength="160" value="{{ fields.get('course_code', '') }}">
+      </label>
+      <label class="wide">Course / Subject title
+        <input name="title" maxlength="160" required value="{{ fields.get('title', '') }}">
+      </label>
+      <label>Year level <span class="optional">Optional</span>
+        <input name="year_level" maxlength="160" value="{{ fields.get('year_level', '') }}">
+      </label>
+      <label>Section <span class="optional">Optional</span>
+        <input name="section" maxlength="160" value="{{ fields.get('section', '') }}">
+      </label>
+      <label>Semester
+        <select name="semester" required>
+          <option value="">Select a semester</option>
+          {% for value in semesters %}<option{% if fields.get('semester') == value %} selected{% endif %}>{{ value }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Academic year
+        <input name="academic_year" maxlength="160" placeholder="2026–2027" required value="{{ fields.get('academic_year', '') }}">
+      </label>
+      <label>Faculty name <span class="optional">Optional</span>
+        <input name="faculty" maxlength="160" value="{{ fields.get('faculty', '') }}">
+      </label>
+      <label>Number of applicable CILOs
+        <select id="cilo-count" name="cilos">
+          {% for count in range(bundle.cilos|length + 1) %}<option value="{{ count }}"{% if fields.get('cilos') == count|string %} selected{% endif %}>{{ count }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+    <details class="cilo-details">
+      <summary>CILO statements <span class="optional">Optional</span></summary>
+      <p class="muted">Include these statements in the batch report.</p>
+      <div class="form-grid">
+        {% for key in bundle.cilos %}
+        <label data-cilo="{{ loop.index }}">{{ key }} statement
+          <textarea name="{{ key }}" rows="2" maxlength="1500">{{ fields.get(key, '') }}</textarea>
+        </label>
+        {% endfor %}
+      </div>
+    </details>
+    <fieldset>
+      <legend>Scanned questionnaires</legend>
+      <div class="drop" id="drop-zone">
+        <label for="scan">Drag a scanned PDF here or choose a file</label>
+        <p class="muted" id="upload-hint">One questionnaire per page. Up to {{ limits.max_mb }} MiB and {{ limits.max_pages }} pages.</p>
+        <input type="file" id="scan" name="scan" accept="application/pdf,.pdf" required aria-describedby="upload-hint upload-status"
+               data-inspect="{{ path }}/uploads/inspect" data-max="{{ limits.max_bytes }}">
+        <p id="upload-status" role="status" hidden></p>
+        <button type="button" class="quiet" id="remove-file" hidden>Remove file</button>
+      </div>
+    </fieldset>
+    <div class="actions"><button type="submit" id="submit-batch">Process Survey Batch</button></div>
+  </form>
+</section>
+{% endblock %}

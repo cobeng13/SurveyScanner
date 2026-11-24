@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Processing History | Course Feedback Survey Processor{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="section-heading"><h1>Processing History</h1><a class="button" href="{{ path }}/">New Survey Batch</a></div>
+  <form action="{{ path }}/history" class="filters">
+    {% for key, label, choices in [('program', 'Program', programs), ('course', 'Course code or title', []),
+      ('academic_year', 'Academic year', []), ('semester', 'Semester', semesters),
+      ('status', 'Processing status', statuses), ('review', 'Review status', reviews)] %}
+    <label>{{ label }}
+      {% if choices %}
+      <select name="{{ key }}"><option value="">All</option>
+        {% for choice in choices %}<option{% if filters[key] == choice %} selected{% endif %}>{{ choice }}</option>{% endfor %}
+      </select>
+      {% else %}<input name="{{ key }}" maxlength="160" value="{{ filters[key] }}">{% endif %}
+    </label>
+    {% endfor %}
+    <div class="actions"><button class="secondary">Apply filters</button><a class="quiet" href="{{ path }}/history">Clear</a></div>
+  </form>
+</section>
+<section class="panel">
+  <h2>Survey batches</h2>
+  {% if batches %}
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Course / Class</th><th>Semester</th><th>Processing</th><th>Review</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for batch in batches %}
+        <tr>
+          <td><strong>{{ batch.metadata.title }}</strong><small>{{ batch.metadata.program }}{% if batch.metadata.course_code %} · {{ batch.metadata.course_code }}{% endif %}{% if batch.metadata.section %} · {{ batch.metadata.section }}{% endif %}</small></td>
+          <td>{{ batch.metadata.semester }}<small>{{ batch.metadata.academic_year }}</small></td>
+          <td><span class="status">{{ batch.status }}</span><small>{{ batch.total }} pages · {{ batch.created[:10] }} UTC</small></td>
+          <td>{{ batch.reviewed }} reviewed<small>{{ batch.pending }} awaiting review</small></td>
+          <td><div class="table-actions">
+            <a href="{{ path }}/batches/{{ batch.id }}">View results</a>
+            {% if batch.pending %}<a href="{{ path }}/batches/{{ batch.id }}/review?pending=true">Continue review</a>{% endif %}
+            {% if batch.status not in active %}
+              <a href="{{ path }}/batches/{{ batch.id }}/file/csv">CSV</a>
+              <a href="{{ path }}/batches/{{ batch.id }}/file/xlsx">Excel</a>
+            {% endif %}
+            <a href="{{ path }}/batches/{{ batch.id }}/file/original">Original scan</a>
+            {% if batch.status in ['Failed', 'Interrupted'] %}
+            <form action="{{ path }}/batches/{{ batch.id }}/retry" method="post">
+              <input type="hidden" name="csrf" value="{{ csrf }}"><button class="link">Retry</button>
+            </form>
+            {% endif %}
+            {% if batch.status != 'Processing' %}{% include "delete.html" %}{% endif %}
+          </div></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<p class="muted">No survey batches match these filters.</p>{% endif %}
+</section>
+{% endblock %}

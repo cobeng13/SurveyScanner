@@ -1,0 +1,799 @@
+{
+  "pageDimensions": [
+    1120,
+    1768
+  ],
+  "bubbleDimensions": [
+    20,
+    20
+  ],
+  "outputColumns": [
+    "Q01",
+    "Q02",
+    "Q03",
+    "Q04",
+    "Q05",
+    "Q06",
+    "Q07",
+    "Q08",
+    "Q09",
+    "Q10",
+    "Q11",
+    "Q12",
+    "Q13",
+    "Q14",
+    "Q15",
+    "Q16",
+    "Q17",
+    "Q18",
+    "Q19",
+    "Q20",
+    "Q21",
+    "Q22",
+    "Q23",
+    "Q24",
+    "Q25",
+    "Q26",
+    "Q27",
+    "Q28",
+    "Q29",
+    "Q30",
+    "Q31",
+    "Q32",
+    "Q33",
+    "CILO01",
+    "CILO02",
+    "CILO03",
+    "CILO04",
+    "CILO05",
+    "CILO06",
+    "CILO07",
+    "CILO08"
+  ],
+  "emptyValue": "",
+  "preProcessors": [
+    {
+      "name": "CropOnMarkers",
+      "options": {
+        "relativePath": "lpu_fiducial.png",
+        "marker_rescale_range": [
+          80,
+          107
+        ],
+        "marker_rescale_steps": 9
+      }
+    }
+  ],
+  "fieldBlocks": {
+    "Q01": {
+      "origin": [
+        848,
+        243
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q01"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q02": {
+      "origin": [
+        848,
+        269
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q02"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q03": {
+      "origin": [
+        848,
+        295
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q03"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q04": {
+      "origin": [
+        848,
+        321
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q04"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q05": {
+      "origin": [
+        848,
+        347
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q05"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q06": {
+      "origin": [
+        848,
+        373
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q06"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q07": {
+      "origin": [
+        848,
+        435
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q07"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q08": {
+      "origin": [
+        848,
+        461
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q08"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q09": {
+      "origin": [
+        848,
+        487
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q09"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q10": {
+      "origin": [
+        848,
+        513
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q10"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q11": {
+      "origin": [
+        848,
+        539
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q11"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q12": {
+      "origin": [
+        848,
+        612
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q12"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q13": {
+      "origin": [
+        848,
+        660
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q13"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q14": {
+      "origin": [
+        848,
+        697
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q14"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q15": {
+      "origin": [
+        848,
+        723
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q15"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q16": {
+      "origin": [
+        848,
+        749
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q16"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q17": {
+      "origin": [
+        848,
+        786
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q17"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q18": {
+      "origin": [
+        848,
+        823
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q18"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q19": {
+      "origin": [
+        848,
+        885
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q19"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q20": {
+      "origin": [
+        848,
+        911
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q20"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q21": {
+      "origin": [
+        848,
+        937
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q21"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q22": {
+      "origin": [
+        848,
+        963
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q22"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q23": {
+      "origin": [
+        848,
+        989
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q23"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q24": {
+      "origin": [
+        848,
+        1015
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q24"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q25": {
+      "origin": [
+        848,
+        1077
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q25"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q26": {
+      "origin": [
+        848,
+        1103
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q26"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q27": {
+      "origin": [
+        848,
+        1129
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q27"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q28": {
+      "origin": [
+        848,
+        1155
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q28"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q29": {
+      "origin": [
+        848,
+        1181
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q29"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q30": {
+      "origin": [
+        848,
+        1207
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q30"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q31": {
+      "origin": [
+        848,
+        1269
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q31"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q32": {
+      "origin": [
+        848,
+        1295
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q32"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "Q33": {
+      "origin": [
+        848,
+        1321
+      ],
+      "bubblesGap": 68,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "Q33"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "4",
+        "3",
+        "2",
+        "1"
+      ]
+    },
+    "CILO01": {
+      "origin": [
+        724,
+        1416
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO01"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO02": {
+      "origin": [
+        724,
+        1448
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO02"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO03": {
+      "origin": [
+        724,
+        1480
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO03"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO04": {
+      "origin": [
+        724,
+        1512
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO04"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO05": {
+      "origin": [
+        724,
+        1544
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO05"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO06": {
+      "origin": [
+        724,
+        1576
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO06"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO07": {
+      "origin": [
+        724,
+        1608
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO07"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    },
+    "CILO08": {
+      "origin": [
+        724,
+        1640
+      ],
+      "bubblesGap": 150,
+      "labelsGap": 0,
+      "fieldLabels": [
+        "CILO08"
+      ],
+      "direction": "horizontal",
+      "bubbleValues": [
+        "Attained",
+        "Needs Improvement",
+        "Not Attained"
+      ]
+    }
+  }
+}

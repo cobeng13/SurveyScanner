@@ -1,0 +1,8 @@
+<details class="delete">
+  <summary>Delete batch</summary>
+  <form action="{{ path }}/batches/{{ batch.id }}/delete" method="post">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label class="check"><input type="checkbox" name="confirm" value="yes" required> Permanently delete this batch and its files</label>
+    <button class="danger">Confirm deletion</button>
+  </form>
+</details>

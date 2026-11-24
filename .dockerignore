@@ -1,0 +1,14 @@
+**
+!Dockerfile
+!requirements-web.txt
+!constraints-py310.txt
+!LICENSE
+!main.py
+!src/
+!src/**
+!webapp/
+!webapp/**
+**/__pycache__/
+**/*.pyc
+src/tests/
+webapp/tests/

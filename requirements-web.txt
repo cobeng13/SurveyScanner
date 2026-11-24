@@ -1,0 +1,21 @@
+-c constraints-py310.txt
+
+# Recognition pins match the validated Python 3.10 environment where available.
+deepmerge==4.0.0
+dotmap==1.3.30
+jsonschema==4.26.0
+matplotlib==3.10.9
+numpy==2.2.6
+opencv-python-headless==4.12.0.88
+pandas==2.3.3
+PyMuPDF==1.28.2
+rich==15.0.0
+screeninfo==0.8.1
+
+# Web, exports, and verification of Cloudflare Access assertions.
+fastapi==0.158.1
+Jinja2==3.1.6
+openpyxl==3.1.5
+PyJWT[crypto]==2.10.1
+python-multipart==0.0.26
+uvicorn==0.41.0

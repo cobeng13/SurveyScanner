@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Help | Course Feedback Survey Processor{% endblock %}
+{% block content %}
+<section class="panel help">
+  <h1>Help / Instructions</h1>
+  <ol>
+    <li><strong>Print the official form.</strong> Use 8.5 × 13 in. paper, one side only, at 100% or Actual Size. Fill in course information and applicable CILO statements before photocopying.</li>
+    <li><strong>Scan the completed forms.</strong> Use portrait orientation, 300 dpi, and one completed questionnaire per page. Keep all four black alignment marks visible. Upload a regular, unlocked PDF of up to {{ limits.max_mb }} MiB and {{ limits.max_pages }} pages.</li>
+    <li><strong>Create one batch per course or class.</strong> Enter all course metadata manually. The applicable CILO count uses the first rows of the form in order.</li>
+    <li><strong>Verify the extracted responses.</strong> Open the original page and the recognition overlay side by side with the machine values. Use Blank / missing where an answer cannot be established. Exclude unreadable or unsuitable pages.</li>
+    <li><strong>Download your results.</strong> Provisional outputs include any unreviewed records that are eligible for export. Finalized results use reviewed included records. The machine CSV and audit files preserve OMRChecker’s original output.</li>
+  </ol>
+  <h2>Summary calculations</h2>
+  <p>{{ method }} Failed and excluded questionnaires do not contribute to the counts. Only applicable CILOs contribute to summaries.</p>
+  <a class="button" href="{{ path }}/questionnaire.pdf">Download Course Feedback Survey Form (PDF)</a>
+</section>
+{% endblock %}

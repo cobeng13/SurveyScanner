@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Course Feedback Survey Processor{% endblock %}</title>
+  <link rel="stylesheet" href="{{ path }}/static/style.css">
+  <script src="{{ path }}/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="frame heading">
+      <a class="brand" href="{{ path }}/">
+        <span class="brand-mark" aria-hidden="true">LPU</span>
+        <span><strong>Course Feedback Survey Processor</strong><small>LPU Batangas — Automated Survey Processing</small></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="{{ path }}/"{% if request.url.path == path ~ '/' %} aria-current="page"{% endif %}>New Survey Batch</a>
+        <a href="{{ path }}/history"{% if request.url.path == path ~ '/history' %} aria-current="page"{% endif %}>Processing History</a>
+        <a href="{{ path }}/help"{% if request.url.path == path ~ '/help' %} aria-current="page"{% endif %}>Help / Instructions</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="frame main">{% block content %}{% endblock %}</main>
+</body>
+</html>

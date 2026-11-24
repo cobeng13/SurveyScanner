@@ -1,0 +1,22 @@
+{
+  "version": "lpu-v1",
+  "engine_revision": "5cf44a5a9c7a49e2e541c6e19aefd09a41a4d494",
+  "engine_describe": "v1.1.0-29-g5cf44a5",
+  "files": {
+    "questionnaire.pdf": "e9669228de1095653d31f502fce3ca6d9b54e63e3cd3a770e4409027a1449e83",
+    "question_mapping.json": "6bf11fb00d3d98efa7234936dcb66fd02ba05964d7b3753f1729c5a725ca8ef4",
+    "template.json": "b24e45a0cf9749b98910ddf65fdfa955f6a23d95155e3b50aeee8be9c75310b0",
+    "config.json": "074674de7a324fe5354a19e2ce3ad17affaeb3e451a1e8284b1785193d0650e4",
+    "lpu_fiducial.png": "5aa23c84b3e29001b6c054c060e4f1f9e244664661b2b0d509b50d415013e22c"
+  },
+  "regression": {
+    "lpu-survey/scans/PhysicalTest1.pdf": "0f93926a9255b282cb1cfc3cfe8841790766610c9625849e80c01fbbafbc928c",
+    "lpu-survey/results/CheckedOMRs/PhysicalTest1.png": "1081418f25c12a2ecf0a28f691c70c02c804ca0d15511246d2b8b8abb9f34f35",
+    "lpu-survey/results/Results/Results_04PM.csv": "bed579f6733e0c55a2cc19ba92cace22c47b5e4c01b59781dca4f7eee12e7d9d",
+    "lpu-survey/results/Manual/ErrorFiles.csv": "432f225dc457bb1733dfeff566968473cef07cd280347647decf22b852a33532",
+    "lpu-survey/results/Manual/MultiMarkedFiles.csv": "432f225dc457bb1733dfeff566968473cef07cd280347647decf22b852a33532",
+    "lpu-survey/results/verification/multipage_pdf/comparison.json": "7caa36e0b52da72ad274784ca482affde9ad9876b9a5cf3020de92969b7aceee",
+    "lpu-survey/results/full-form-synthetic/summary.json": "0bb702b452c27a7228ba5f8b1acba2f5b315494955c3a64d56d437508983a26d",
+    "lpu-survey/generated/layout_debug.png": "0e3f09ece826cd9e5820b703a4192f68fd82f54f5100d9043c04ff8997acdcd5"
+  }
+}

@@ -1,0 +1,1366 @@
+{
+  "coordinate_system": "PDF points from the top-left of the uncropped page",
+  "page_size_pt": [
+    612,
+    936
+  ],
+  "fiducial_centers_pt": [
+    [
+      26,
+      26
+    ],
+    [
+      586,
+      26
+    ],
+    [
+      26,
+      910
+    ],
+    [
+      586,
+      910
+    ]
+  ],
+  "bubble_size_pt": 10,
+  "fields": {
+    "Q01": {
+      "section": "Relevance of Course",
+      "statement": "The course helped me to develop relevant subject knowledge",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            152.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            152.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            152.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            152.5
+          ]
+        }
+      ]
+    },
+    "Q02": {
+      "section": "Relevance of Course",
+      "statement": "The course helped me to develop  related practical skills",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            165.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            165.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            165.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            165.5
+          ]
+        }
+      ]
+    },
+    "Q03": {
+      "section": "Relevance of Course",
+      "statement": "The course helped me to develop team working skills",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            178.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            178.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            178.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            178.5
+          ]
+        }
+      ]
+    },
+    "Q04": {
+      "section": "Relevance of Course",
+      "statement": "The course helped me to develop leadership skills",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            191.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            191.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            191.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            191.5
+          ]
+        }
+      ]
+    },
+    "Q05": {
+      "section": "Relevance of Course",
+      "statement": "The course helped me  to develop communication skills",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            204.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            204.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            204.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            204.5
+          ]
+        }
+      ]
+    },
+    "Q06": {
+      "section": "Relevance of Course",
+      "statement": "The course helped me to develop positive attitude on my  program of study",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            217.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            217.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            217.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            217.5
+          ]
+        }
+      ]
+    },
+    "Q07": {
+      "section": "Course organization and  ILOs",
+      "statement": "The course was implemented according to the approved curriculum",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            248.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            248.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            248.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            248.5
+          ]
+        }
+      ]
+    },
+    "Q08": {
+      "section": "Course organization and  ILOs",
+      "statement": "Intended Learning Outcomes (ILOs) of the course were made known from the beginning",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            261.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            261.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            261.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            261.5
+          ]
+        }
+      ]
+    },
+    "Q09": {
+      "section": "Course organization and  ILOs",
+      "statement": "Intended Learning Outcomes (ILOs) of the course  were clear",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            274.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            274.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            274.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            274.5
+          ]
+        }
+      ]
+    },
+    "Q10": {
+      "section": "Course organization and  ILOs",
+      "statement": "Intended Learning Outcomes (ILOs) of the course were relevant",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            287.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            287.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            287.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            287.5
+          ]
+        }
+      ]
+    },
+    "Q11": {
+      "section": "Course organization and  ILOs",
+      "statement": "There were no overlapping of  contents within a course",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            300.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            300.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            300.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            300.5
+          ]
+        }
+      ]
+    },
+    "Q12": {
+      "section": "Teachers  and TLAs",
+      "statement": "Teaching - Learning Activities (TLAs) such as practical, educational tour etc. were useful and relevant",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            337.0
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            337.0
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            337.0
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            337.0
+          ]
+        }
+      ]
+    },
+    "Q13": {
+      "section": "Teachers  and TLAs",
+      "statement": "Independent Learning (ILs) activities such as journal reading, research work, project, etc. were useful and relevant",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            361.0
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            361.0
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            361.0
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            361.0
+          ]
+        }
+      ]
+    },
+    "Q14": {
+      "section": "Teachers  and TLAs",
+      "statement": "The TLAs within a course were aligned with assessment tasks",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            379.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            379.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            379.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            379.5
+          ]
+        }
+      ]
+    },
+    "Q15": {
+      "section": "Teachers  and TLAs",
+      "statement": "The teachers motivated the students to learn",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            392.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            392.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            392.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            392.5
+          ]
+        }
+      ]
+    },
+    "Q16": {
+      "section": "Teachers  and TLAs",
+      "statement": "The teachers provided adequate opportunities for team work",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            405.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            405.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            405.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            405.5
+          ]
+        }
+      ]
+    },
+    "Q17": {
+      "section": "Teachers  and TLAs",
+      "statement": "The teachers provided adequate opportunities for independent learning as well as teamwok",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            424.0
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            424.0
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            424.0
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            424.0
+          ]
+        }
+      ]
+    },
+    "Q18": {
+      "section": "Teachers  and TLAs",
+      "statement": "I am satisfied with the different learning activities in this course",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            442.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            442.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            442.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            442.5
+          ]
+        }
+      ]
+    },
+    "Q19": {
+      "section": "Assessment",
+      "statement": "Assessment methods to be used were told at the beginning of the course",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            473.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            473.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            473.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            473.5
+          ]
+        }
+      ]
+    },
+    "Q20": {
+      "section": "Assessment",
+      "statement": "Assessments covered all the main  topics taught in the course",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            486.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            486.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            486.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            486.5
+          ]
+        }
+      ]
+    },
+    "Q21": {
+      "section": "Assessment",
+      "statement": "The number of assessments was appropriate and adequate",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            499.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            499.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            499.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            499.5
+          ]
+        }
+      ]
+    },
+    "Q22": {
+      "section": "Assessment",
+      "statement": "Distribution of assessments over a semester was appropriate",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            512.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            512.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            512.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            512.5
+          ]
+        }
+      ]
+    },
+    "Q23": {
+      "section": "Assessment",
+      "statement": "Allocation of marks/grade  among assessments was satisfactory",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            525.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            525.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            525.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            525.5
+          ]
+        }
+      ]
+    },
+    "Q24": {
+      "section": "Assessment",
+      "statement": "The teachers provided timely feedback on student  performance",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            538.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            538.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            538.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            538.5
+          ]
+        }
+      ]
+    },
+    "Q25": {
+      "section": "Learning environment",
+      "statement": "Available facilities in the classrooms were satisfactory",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            569.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            569.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            569.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            569.5
+          ]
+        }
+      ]
+    },
+    "Q26": {
+      "section": "Learning environment",
+      "statement": "Available library facilities were adequate",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            582.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            582.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            582.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            582.5
+          ]
+        }
+      ]
+    },
+    "Q27": {
+      "section": "Learning environment",
+      "statement": "Available laboratory facilities were adequate",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            595.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            595.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            595.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            595.5
+          ]
+        }
+      ]
+    },
+    "Q28": {
+      "section": "Learning environment",
+      "statement": "Access to computer facilities were sufficient",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            608.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            608.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            608.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            608.5
+          ]
+        }
+      ]
+    },
+    "Q29": {
+      "section": "Learning environment",
+      "statement": "There was sufficient access to internet and electronic databases",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            621.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            621.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            621.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            621.5
+          ]
+        }
+      ]
+    },
+    "Q30": {
+      "section": "Learning environment",
+      "statement": "Availability of facilities for recreation was adequate",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            634.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            634.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            634.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            634.5
+          ]
+        }
+      ]
+    },
+    "Q31": {
+      "section": "Counselling",
+      "statement": "The teachers were available for consultation whenever needed",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            665.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            665.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            665.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            665.5
+          ]
+        }
+      ]
+    },
+    "Q32": {
+      "section": "Counselling",
+      "statement": "Academic counselling was available when needed",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            678.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            678.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            678.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            678.5
+          ]
+        }
+      ]
+    },
+    "Q33": {
+      "section": "Counselling",
+      "statement": "Counselling on non-academic matters was available when needed",
+      "choices": [
+        {
+          "value": "4",
+          "center_pt": [
+            455.0,
+            691.5
+          ]
+        },
+        {
+          "value": "3",
+          "center_pt": [
+            489.0,
+            691.5
+          ]
+        },
+        {
+          "value": "2",
+          "center_pt": [
+            523.0,
+            691.5
+          ]
+        },
+        {
+          "value": "1",
+          "center_pt": [
+            557.0,
+            691.5
+          ]
+        }
+      ]
+    },
+    "CILO01": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            739.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            739.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            739.0
+          ]
+        }
+      ]
+    },
+    "CILO02": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            755.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            755.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            755.0
+          ]
+        }
+      ]
+    },
+    "CILO03": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            771.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            771.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            771.0
+          ]
+        }
+      ]
+    },
+    "CILO04": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            787.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            787.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            787.0
+          ]
+        }
+      ]
+    },
+    "CILO05": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            803.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            803.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            803.0
+          ]
+        }
+      ]
+    },
+    "CILO06": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            819.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            819.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            819.0
+          ]
+        }
+      ]
+    },
+    "CILO07": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            835.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            835.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            835.0
+          ]
+        }
+      ]
+    },
+    "CILO08": {
+      "section": "Attainment of Course Intended Learning Outcomes (CILOs)",
+      "statement": null,
+      "choices": [
+        {
+          "value": "Attained",
+          "center_pt": [
+            393.0,
+            851.0
+          ]
+        },
+        {
+          "value": "Needs Improvement",
+          "center_pt": [
+            468.0,
+            851.0
+          ]
+        },
+        {
+          "value": "Not Attained",
+          "center_pt": [
+            543.0,
+            851.0
+          ]
+        }
+      ]
+    }
+  }
+}

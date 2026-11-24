@@ -1,0 +1,75 @@
+x-runtime: &runtime
+  image: survey-scanner:local
+  restart: unless-stopped
+  init: true
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 160
+  volumes:
+    - survey-data:/data
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-settings: &settings
+  SURVEY_DATA: /data
+  SURVEY_MAX_UPLOAD_MB: ${SURVEY_MAX_UPLOAD_MB:-50}
+  SURVEY_MAX_PAGES: ${SURVEY_MAX_PAGES:-40}
+  SURVEY_MAX_RASTER_MP: ${SURVEY_MAX_RASTER_MP:-420}
+  SURVEY_CONCURRENCY: ${SURVEY_CONCURRENCY:-1}
+  SURVEY_JOB_TIMEOUT: ${SURVEY_JOB_TIMEOUT:-900}
+
+services:
+  web:
+    <<: *runtime
+    build: .
+    container_name: survey-scanner-web
+    stop_grace_period: 45s
+    mem_limit: ${SURVEY_WEB_MEMORY:-768m}
+    tmpfs:
+      - /tmp:size=${SURVEY_WEB_TEMP:-256m},mode=1777
+    ports:
+      - "${SURVEY_BIND_ADDRESS:-127.0.0.1}:${SURVEY_HOST_PORT:-8008}:8000"
+    environment:
+      <<: *settings
+      SURVEY_AUTH: cloudflare
+      SURVEY_PUBLIC_ORIGIN: ${SURVEY_PUBLIC_ORIGIN:?Set the survey HTTPS origin}
+      SURVEY_ROOT_PATH: ${SURVEY_ROOT_PATH:-}
+      SURVEY_CF_TEAM: ${SURVEY_CF_TEAM:?Set the Cloudflare Access team hostname}
+      SURVEY_CF_AUD: ${SURVEY_CF_AUD:?Set the Cloudflare Access application audience}
+      FORWARDED_ALLOW_IPS: ${SURVEY_TRUSTED_PROXY_IPS:-127.0.0.1}
+    healthcheck:
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health', timeout=3).close()"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    networks: [survey]
+
+  worker:
+    <<: *runtime
+    container_name: survey-scanner-worker
+    pull_policy: never
+    command: ["python", "-m", "webapp.worker"]
+    depends_on:
+      web:
+        condition: service_healthy
+    stop_grace_period: 30s
+    mem_limit: ${SURVEY_WORKER_MEMORY:-1500m}
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    environment: *settings
+    healthcheck:
+      disable: true
+    network_mode: none
+
+networks:
+  survey:
+    name: survey-scanner
+
+volumes:
+  survey-data:
+    name: ${SURVEY_VOLUME_NAME:-survey-scanner-data}

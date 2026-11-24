@@ -1,0 +1,19 @@
+{
+  "dimensions": {
+    "processing_width": 1224,
+    "processing_height": 1872
+  },
+  "alignment_params": {
+    "auto_align": false
+  },
+  "pdf_params": {
+    "pdf_dpi": 300,
+    "pdf_page": "1-"
+  },
+  "outputs": {
+    "show_image_level": 0,
+    "save_image_level": 0,
+    "save_detections": true,
+    "filter_out_multimarked_files": true
+  }
+}
