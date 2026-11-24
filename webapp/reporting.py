@@ -9,6 +9,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 from .config import RATINGS
+from .csvutil import spreadsheet_value
 from .database import elapsed
 
 METADATA = {
@@ -78,15 +79,6 @@ def report(batch, pages, bundle):
         "ambiguous_pages": sum(page["status"] == "Multiple marks" for page in pages),
         "duration": elapsed(batch),
     }
-
-
-def spreadsheet_value(value):
-    if isinstance(value, str):
-        dangerous = value.lstrip().startswith(("=", "+", "-", "@"))
-        control = value.startswith(("\t", "\r", "\n"))
-        if dangerous or control:
-            return "'" + value
-    return value
 
 
 def response_rows(batch, pages, bundle, summary):

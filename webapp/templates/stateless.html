@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course Feedback Survey Processor</title>
+  <link rel="stylesheet" href="{{ path }}/static/style.css">
+</head>
+<body>
+  <main class="frame main">
+    <header class="panel download-panel">
+      <div>
+        <h1>Course Feedback Survey Processor</h1>
+        <p>LPU Batangas — Automated Survey Processing</p>
+      </div>
+      <a class="button secondary" href="{{ path }}/questionnaire.pdf">Download Course Feedback Survey Form (PDF)</a>
+      <ul class="print-notes">
+        <li>Print single-sided on 8.5 × 13 in. paper at actual size.</li>
+        <li>Faculty complete the course information and applicable CILO statements before photocopying.</li>
+        <li>Scan the completed questionnaires at 300 dpi, one form per page.</li>
+      </ul>
+    </header>
+    <section class="panel">
+      <h2>Convert scanned surveys to CSV</h2>
+      <p class="muted">Upload a PDF of up to {{ limits.max_mb }} MiB and {{ limits.max_pages }} pages. Keep this tab open until the CSV downloads.</p>
+      {% if error %}<p class="notice error" role="alert">{{ error }}</p>{% endif %}
+      <form action="{{ path }}/process" method="post" enctype="multipart/form-data">
+        <div class="drop">
+          <label for="scan">Scanned questionnaire PDF</label>
+          <input id="scan" name="scan" type="file" accept="application/pdf,.pdf" required>
+        </div>
+        <div class="actions"><button type="submit">Process and Download CSV</button></div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

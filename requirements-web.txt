@@ -12,10 +12,8 @@ PyMuPDF==1.28.2
 rich==15.0.0
 screeninfo==0.8.1
 
-# Web, exports, and verification of Cloudflare Access assertions.
+# CSV-only web application.
 fastapi==0.158.1
 Jinja2==3.1.6
-openpyxl==3.1.5
-PyJWT[crypto]==2.10.1
 python-multipart==0.0.26
 uvicorn==0.41.0

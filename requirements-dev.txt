@@ -1,2 +1,4 @@
 -r requirements-web.txt
 httpx==0.28.1
+openpyxl==3.1.5
+PyJWT[crypto]==2.10.1

@@ -1,5 +1,11 @@
 # Validation results
 
+## CSV-only deployment
+
+The direct PDF-to-CSV route matched all 41 fields in the retained physical baseline and all 82 fields in the retained two-page synthetic scan. Tests confirmed the byte-identical PDF download, invalid file and size rejection, expected page numbers, absence of history routes, and temporary-file cleanup. The Docker and Compose configurations use one service with temporary storage. The updated image still needs a runtime smoke test on apps-server.
+
+## Earlier batch workflow
+
 | Check | Result |
 | --- | --- |
 | Upstream files | The 41 tracked paths in the source engine checkout matched OMRChecker revision `5cf44a5a9c7a49e2e541c6e19aefd09a41a4d494`, allowing only checkout line-ending differences. The release includes the unchanged runtime source, and the upstream test samples remain in OMRChecker. |
