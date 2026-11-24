@@ -227,6 +227,27 @@ class ApplicationTests(unittest.TestCase):
         for have, expected in zip(rows, baseline):
             self.assertEqual({key: have[key] for key in keys}, {key: expected[key] for key in keys})
 
+    def test_lan_test_mode_isolates_storage_and_clients(self):
+        origin = "http://192.168.0.226:8008"
+        settings = replace(self.settings, auth="lan-test", public_origin=origin)
+        self.assertEqual(settings.data, self.settings.data / ".lan-test")
+        self.assertNotEqual(settings.data, self.settings.data)
+        with TestClient(create_app(settings), base_url=origin, client=("192.168.0.10", 12345)) as client:
+            self.assertEqual(client.get("/health").json()["access"], "lan-test")
+            form = client.get("/")
+            self.assertEqual(form.status_code, 200)
+            self.assertEqual(client.get("/questionnaire.pdf").status_code, 200)
+            token = re.search(r'name="csrf" value="([^"]+)"', form.text).group(1)
+            scan = {"scan": ("scan.pdf", make_pdf(settings))}
+            self.assertEqual(client.post("/uploads/inspect", files=scan, headers={
+                "origin": origin, "x-csrf-token": token,
+            }).json()["pages"], 1)
+            self.assertEqual(client.get("/", headers={"host": "public.example.edu"}).status_code, 403)
+        with TestClient(create_app(settings), base_url=origin, client=("192.168.1.10", 12345)) as other:
+            self.assertEqual(other.get("/history").status_code, 403)
+        with self.assertRaises(ValueError):
+            create_app(replace(settings, public_origin="https://public.example.edu"))
+
     def test_lan_startup_with_incomplete_access(self):
         for team, origin, audience in (
             ("", "", ""),

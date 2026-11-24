@@ -34,6 +34,27 @@ conda activate omrchecker
 
 Open `http://127.0.0.1:8008`. Local development stores data in `survey-data/` by default. Local mode accepts connections from loopback peers and provides a single development identity. Use it only on the workstation. The production container uses Cloudflare Access.
 
+## LAN acceptance test
+
+The LAN test uses separate containers and stores data under `/data/.lan-test` in a separate volume. The test UI accepts requests from the configured private IPv4 address’s /24 subnet without sign-in. Use test scans in this mode. The regular deployment retains Cloudflare Access.
+
+Build from the project root with `docker build -t survey-scanner:local .`. Free the host port if the main web container is already using it, then start the test using plain Docker.
+
+```bash
+docker volume create survey-scanner-lan-test-data
+
+docker run -d --rm --init --name survey-scanner-lan-web --network host \
+  --no-healthcheck -e SURVEY_AUTH=lan-test -e SURVEY_PUBLIC_ORIGIN=http://192.168.0.226:8008 \
+  -v survey-scanner-lan-test-data:/data survey-scanner:local \
+  uvicorn webapp.main:create_app --factory --host 192.168.0.226 --port 8008 --no-proxy-headers
+
+docker run -d --rm --init --name survey-scanner-lan-worker --network none --no-healthcheck \
+  -e SURVEY_AUTH=lan-test -v survey-scanner-lan-test-data:/data \
+  survey-scanner:local python -m webapp.worker
+```
+
+Open `http://192.168.0.226:8008` from the LAN. When finished, run `docker stop survey-scanner-lan-web survey-scanner-lan-worker` before starting the protected web container on the same port. Point the Tunnel at the protected deployment.
+
 ## Linux apps-server deployment
 
 The stack follows the deployed apps’ Docker Slim, loopback publishing, health check, restart and bounded logging conventions. The separate web and worker containers use the storage pattern from PacheckEssay. The Scheduler runbook establishes the `/opt/apps` deployment directory and the host, container and separate-guest options for Tunnel origins.
@@ -116,7 +137,7 @@ Cloudflare documents the issuer, audience and signing-key setup in [Validate JWT
 | `SURVEY_WORKER_MEMORY` | `1500m` | Worker container memory limit. |
 | `SURVEY_VOLUME_NAME` | `survey-scanner-data` | Named volume used by both containers. |
 | `SURVEY_DATA` | `/data` in Docker | Data root. Defaults to `survey-data/` in local Python. |
-| `SURVEY_AUTH` | `cloudflare` | Set to `local` for loopback development only. |
+| `SURVEY_AUTH` | `cloudflare` | Use `local` for loopback development or `lan-test` for the separate LAN acceptance test. |
 | `SURVEY_ENGINE_PYTHON` | Current interpreter | Optional Windows development override for a separate engine interpreter. |
 
 The plain Docker commands set the bind address, host port, temporary space, memory and volume in the run flags. The corresponding `SURVEY_*` deployment variables in `.env.example` apply to the optional Compose file.

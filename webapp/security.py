@@ -4,6 +4,7 @@ from ipaddress import ip_address
 import logging
 from secrets import token_bytes
 import time
+from urllib.parse import urlsplit
 
 import jwt
 from starlette.concurrency import run_in_threadpool
@@ -56,6 +57,8 @@ class SecurityMiddleware:
         self.app = app
         self.access = access
         self.settings = settings
+        self.lan_network = settings.lan_test_network() if settings.auth == "lan-test" else None
+        self.lan_host = urlsplit(settings.public_origin).netloc if self.lan_network is not None else None
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
@@ -75,7 +78,17 @@ class SecurityMiddleware:
         public_asset = path == "/health" or path.startswith("/static/")
         owner = None
         if not public_asset:
-            if self.settings.auth == "local":
+            if self.lan_network is not None:
+                try:
+                    peer = ip_address((scope.get("client") or ("", 0))[0])
+                except ValueError:
+                    peer = None
+                if peer is None or peer not in self.lan_network or headers.get("host") != self.lan_host:
+                    await JSONResponse({"detail": "Open the configured private LAN address for this test."},
+                                       status_code=403, headers={"Cache-Control": "no-store"})(scope, receive, send)
+                    return
+                owner = "lan-test"
+            elif self.settings.auth == "local":
                 try:
                     peer = scope.get("client", ("", 0))[0]
                     if ip_address(peer).is_loopback:

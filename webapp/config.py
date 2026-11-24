@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass, field
 from hashlib import sha256
+from ipaddress import IPv4Address, ip_network
 import json
 from pathlib import Path
 import re
@@ -13,6 +14,7 @@ PROGRAMS = ("BS Biology", "BS Pharmacy", "BS Medical Laboratory Science",
 SEMESTERS = ("First Semester", "Second Semester", "Summer")
 STATUSES = ("Queued", "Processing", "Completed", "Completed with errors", "Failed", "Interrupted")
 RATINGS = {"4": "Strongly Agree", "3": "Agree", "2": "Disagree", "1": "Strongly Disagree"}
+PRIVATE_LAN_RANGES = tuple(map(ip_network, ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")))
 
 
 def integer(name, default, minimum, maximum):
@@ -75,6 +77,22 @@ class Settings:
     cf_team: str = field(default_factory=lambda: os.getenv("SURVEY_CF_TEAM", ""))
     cf_aud: str = field(default_factory=lambda: os.getenv("SURVEY_CF_AUD", ""))
 
+    def __post_init__(self):
+        if self.auth == "lan-test":
+            test_data = self.data if self.data.name == ".lan-test" else self.data / ".lan-test"
+            if test_data.resolve() != test_data:
+                raise ValueError("LAN test storage must not be a symbolic link")
+            object.__setattr__(self, "data", test_data)
+
+    def lan_test_network(self):
+        try:
+            address = IPv4Address(urlsplit(self.public_origin).hostname)
+        except ValueError:
+            raise ValueError("LAN test mode needs a private IPv4 address in SURVEY_PUBLIC_ORIGIN") from None
+        if not any(address in network for network in PRIVATE_LAN_RANGES):
+            raise ValueError("LAN test mode needs a private IPv4 address in SURVEY_PUBLIC_ORIGIN")
+        return ip_network(f"{address}/24", strict=False)
+
     @property
     def max_bytes(self):
         return self.max_mb * 1024 * 1024
@@ -83,8 +101,8 @@ class Settings:
         """Validate startup options and report whether user routes can be enabled."""
         if self.root_path and not re.fullmatch(r"(/[A-Za-z0-9_-]+)+", self.root_path):
             raise ValueError("SURVEY_ROOT_PATH must contain only URL path segments")
-        if self.auth not in {"cloudflare", "local"}:
-            raise ValueError("SURVEY_AUTH must be cloudflare or local")
+        if self.auth not in {"cloudflare", "local", "lan-test"}:
+            raise ValueError("SURVEY_AUTH must be cloudflare, local or lan-test")
         try:
             origin = urlsplit(self.public_origin)
             valid_origin = bool(
@@ -97,6 +115,10 @@ class Settings:
         if self.auth == "cloudflare":
             return bool(valid_origin and origin.scheme == "https" and self.cf_aud.strip()
                         and re.fullmatch(r"[a-z0-9-]+\.cloudflareaccess\.com", self.cf_team))
+        if self.auth == "lan-test":
+            if not valid_origin or origin.scheme != "http" or self.root_path:
+                raise ValueError("LAN test mode needs an HTTP origin at the root of a private LAN address")
+            self.lan_test_network()
         if self.public_origin and not valid_origin:
             raise ValueError("SURVEY_PUBLIC_ORIGIN must contain only the scheme and authority")
         return True
