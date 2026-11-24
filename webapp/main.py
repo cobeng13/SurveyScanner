@@ -32,8 +32,9 @@ INVALID_CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 
 def create_app(settings=None):
     settings = settings or Settings()
-    settings.check_web()
     access = Access(settings)
+    if not access.configured:
+        LOG.warning("Set SURVEY_PUBLIC_ORIGIN (HTTPS), SURVEY_CF_TEAM and SURVEY_CF_AUD to enable survey routes.")
 
     @asynccontextmanager
     async def lifespan(app):
@@ -99,7 +100,8 @@ def create_app(settings=None):
     def health(request: Request):
         with request.app.state.db.connect() as conn:
             conn.execute("SELECT 1 FROM batches LIMIT 1")
-        return {"status": "ok", "template": settings.bundle.version,
+        return {"status": "ok", "access": settings.auth if access.configured else "setup_required",
+                "template": settings.bundle.version,
                 "omrchecker": settings.bundle.manifest["engine_revision"]}
 
     @app.get("/")

@@ -36,10 +36,10 @@ services:
     environment:
       <<: *settings
       SURVEY_AUTH: cloudflare
-      SURVEY_PUBLIC_ORIGIN: ${SURVEY_PUBLIC_ORIGIN:?Set the survey HTTPS origin}
+      SURVEY_PUBLIC_ORIGIN: ${SURVEY_PUBLIC_ORIGIN:-}
       SURVEY_ROOT_PATH: ${SURVEY_ROOT_PATH:-}
-      SURVEY_CF_TEAM: ${SURVEY_CF_TEAM:?Set the Cloudflare Access team hostname}
-      SURVEY_CF_AUD: ${SURVEY_CF_AUD:?Set the Cloudflare Access application audience}
+      SURVEY_CF_TEAM: ${SURVEY_CF_TEAM:-}
+      SURVEY_CF_AUD: ${SURVEY_CF_AUD:-}
       FORWARDED_ALLOW_IPS: ${SURVEY_TRUSTED_PROXY_IPS:-127.0.0.1}
     healthcheck:
       test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8008/health', timeout=3).close()"]

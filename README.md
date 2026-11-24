@@ -38,7 +38,7 @@ Open `http://127.0.0.1:8008`. Local development stores data in `survey-data/` by
 
 The stack follows the deployed apps’ Docker Slim, loopback publishing, health check, restart and bounded logging conventions. The separate web and worker containers use the storage pattern from PacheckEssay. The Scheduler runbook establishes the `/opt/apps` deployment directory and the host, container and separate-guest options for Tunnel origins.
 
-The documented existing allocations include 8000–8007. The image listens on **8008**. The commands below publish it as **127.0.0.1:8008**. Check the current apps-server listeners and Docker mappings before first startup. If you need another host port, change the host side of `--publish` and use that port for the Tunnel origin.
+The documented existing allocations include 8000–8007. The image listens on **8008**. The commands below publish it as **127.0.0.1:8008**. Check the current apps-server listeners and Docker mappings before first startup. For a Tunnel connector on another guest, publish to the apps-server LAN address, for example `--publish 192.168.0.226:8008:8008`, and use `http://192.168.0.226:8008` for health checks and the Tunnel origin. If you need another host port, change the host side of `--publish`.
 
 ```bash
 cd /opt/apps
@@ -50,7 +50,7 @@ docker ps --format 'table {{.Names}}\t{{.Ports}}'
 sudo ss -ltn 'sport = :8008'
 ```
 
-Set `SURVEY_PUBLIC_ORIGIN`, `SURVEY_CF_TEAM` and `SURVEY_CF_AUD` in `.env` using the Access application for this hostname. Set Cloudflare Access to allow only authorized staff or groups. Use the same trusted deployment account for build, updates and backup operations. Then run:
+The web container can start before Cloudflare Access is configured. In this state, `/health` returns `access: setup_required` and all other routes return HTTP 503. Use the same trusted deployment account for build, updates and backup operations.
 
 ```bash
 docker build -t survey-scanner:local .
@@ -84,12 +84,14 @@ The `survey-scanner-web` and `survey-scanner-worker` containers restart with the
 
 ### Cloudflare and proxies
 
+When the Access application is ready, set `SURVEY_PUBLIC_ORIGIN` to the public HTTPS origin, `SURVEY_CF_TEAM` to the team hostname and `SURVEY_CF_AUD` to the application audience tag in `.env`. Allow only authorized staff or groups in Access. Recreate the web container using its startup command to apply the new environment. The worker can stay running. Check that `/health` reports `access: cloudflare`, then sign in through the public hostname.
+
 - With a host-installed Tunnel on apps-server, set the origin service to `http://127.0.0.1:8008`.
 - With a Docker-based connector on that host, attach the connector to the private `survey-scanner` network through its own deployment configuration and target `http://survey-scanner-web:8008`.
 - With a connector in another Proxmox guest, bind the port to the specific apps-server LAN IP, permit only the connector’s IP through the host firewall and target the configured LAN address and port. Keep the origin off the public network.
 - Preserve the `Cf-Access-Jwt-Assertion` header on every protected request. Restrict forwarded headers to the actual proxy addresses seen by Uvicorn. Set `SURVEY_PUBLIC_ORIGIN` to the public scheme and authority without a path. For a proxy that strips a URL prefix, set `SURVEY_ROOT_PATH` to that prefix. A dedicated HTTPS hostname at the root is the deployment default.
 - Pass upload bodies of at least the configured file limit plus multipart overhead. Cloudflare or another proxy can have a lower cap. Bypass caching for survey pages and file routes. Verify upload, preview, polling, review submission and downloads through the actual proxy after the container smoke test.
-- `GET /health` reports database readiness and the loaded template revision. All batch routes require Access. Polling reports definitive counts after recognition, plus complete native CSV rows during processing when available.
+- `GET /health` reports database readiness, Access configuration status and the loaded template revision. All batch routes require Access. Polling reports definitive counts after recognition, plus complete native CSV rows during processing when available.
 
 Cloudflare documents the issuer, audience and signing-key setup in [Validate JWTs](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/).
 

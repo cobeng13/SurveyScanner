@@ -80,18 +80,23 @@ class Settings:
         return self.max_mb * 1024 * 1024
 
     def check_web(self):
+        """Validate startup options and report whether user routes can be enabled."""
         if self.root_path and not re.fullmatch(r"(/[A-Za-z0-9_-]+)+", self.root_path):
             raise ValueError("SURVEY_ROOT_PATH must contain only URL path segments")
-        origin = urlsplit(self.public_origin)
-        if self.auth == "cloudflare":
-            if not re.fullmatch(r"[a-z0-9-]+\.cloudflareaccess\.com", self.cf_team):
-                raise ValueError("Set SURVEY_CF_TEAM to the Cloudflare Access team hostname")
-            if not self.cf_aud or origin.scheme != "https" or not origin.hostname:
-                raise ValueError("Set the Access application audience and public HTTPS origin")
-        elif self.auth != "local":
+        if self.auth not in {"cloudflare", "local"}:
             raise ValueError("SURVEY_AUTH must be cloudflare or local")
-        if self.public_origin and (
-            origin.scheme not in {"http", "https"} or not origin.hostname or origin.path
-            or origin.query or origin.fragment or origin.username or origin.password
-        ):
+        try:
+            origin = urlsplit(self.public_origin)
+            valid_origin = bool(
+                origin.scheme in {"http", "https"} and origin.hostname and not (
+                    origin.path or origin.query or origin.fragment or origin.username or origin.password
+                ) and (origin.port is None or origin.port > 0)
+            )
+        except ValueError:
+            origin, valid_origin = None, False
+        if self.auth == "cloudflare":
+            return bool(valid_origin and origin.scheme == "https" and self.cf_aud.strip()
+                        and re.fullmatch(r"[a-z0-9-]+\.cloudflareaccess\.com", self.cf_team))
+        if self.public_origin and not valid_origin:
             raise ValueError("SURVEY_PUBLIC_ORIGIN must contain only the scheme and authority")
+        return True

@@ -17,13 +17,14 @@ LOG = logging.getLogger("survey.security")
 class Access:
     def __init__(self, settings):
         self.settings = settings
+        self.configured = settings.check_web()
         self.secret = token_bytes(32)
         self.issuer = f"https://{settings.cf_team}"
-        if settings.auth == "cloudflare":
+        if self.configured and settings.auth == "cloudflare":
             self.keys = jwt.PyJWKClient(f"{self.issuer}/cdn-cgi/access/certs", timeout=4)
 
     def authenticate(self, token):
-        if not token or len(token) > 8192:
+        if not self.configured or not token or len(token) > 8192:
             return None
         try:
             signing_key = self.keys.get_signing_key_from_jwt(token)
@@ -65,6 +66,12 @@ class SecurityMiddleware:
         root = scope.get("root_path")
         if root and path.startswith(root + "/"):
             path = path[len(root):]
+        if not self.access.configured and path != "/health":
+            await JSONResponse(
+                {"detail": "Cloudflare Access setup is required before using Survey Scanner."},
+                status_code=503, headers={"Cache-Control": "no-store"},
+            )(scope, receive, send)
+            return
         public_asset = path == "/health" or path.startswith("/static/")
         owner = None
         if not public_asset:

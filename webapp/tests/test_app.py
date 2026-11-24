@@ -227,6 +227,25 @@ class ApplicationTests(unittest.TestCase):
         for have, expected in zip(rows, baseline):
             self.assertEqual({key: have[key] for key in keys}, {key: expected[key] for key in keys})
 
+    def test_lan_startup_with_incomplete_access(self):
+        for team, origin, audience in (
+            ("", "", ""),
+            ("test-team.cloudflareaccess.com", "https://survey.example.edu", ""),
+            ("test-team.cloudflareaccess.com", "http://192.168.0.226:8008", "audience"),
+        ):
+            with self.subTest(team=team, origin=origin, audience=audience):
+                settings = replace(self.settings, auth="cloudflare", cf_team=team,
+                                   public_origin=origin, cf_aud=audience)
+                with patch("webapp.security.jwt.PyJWKClient") as jwks:
+                    with TestClient(create_app(settings), base_url="http://192.168.0.226:8008") as client:
+                        response = client.get("/health")
+                        self.assertEqual(response.status_code, 200)
+                        self.assertEqual(response.json()["access"], "setup_required")
+                        for route in ("/", "/history", "/questionnaire.pdf", "/batches/test/file/original"):
+                            self.assertEqual(client.get(route).status_code, 503)
+                        self.assertEqual(client.post("/batches").status_code, 503)
+                    jwks.assert_not_called()
+
     def test_access_validation_and_ownership(self):
         settings = replace(self.settings, auth="cloudflare", public_origin="https://survey.example.edu",
                            cf_team="test-team.cloudflareaccess.com", cf_aud="survey-audience")
