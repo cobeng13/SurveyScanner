@@ -66,9 +66,9 @@ class Bundle:
 class Settings:
     data: Path = field(default_factory=lambda: Path(os.getenv("SURVEY_DATA", ROOT / "survey-data")).resolve())
     bundle: Bundle = field(default_factory=lambda: Bundle("lpu-v1"))
-    max_mb: int = field(default_factory=lambda: integer("SURVEY_MAX_UPLOAD_MB", 50, 1, 500))
-    max_pages: int = field(default_factory=lambda: integer("SURVEY_MAX_PAGES", 40, 1, 120))
-    max_raster_mp: int = field(default_factory=lambda: integer("SURVEY_MAX_RASTER_MP", 420, 10, 1300))
+    max_mb: int = field(default_factory=lambda: integer("SURVEY_MAX_UPLOAD_MB", 500, 1, 500))
+    max_pages: int = field(default_factory=lambda: integer("SURVEY_MAX_PAGES", 200, 1, 200))
+    max_raster_mp: int = field(default_factory=lambda: integer("SURVEY_MAX_RASTER_MP", 2800, 10, 2800))
     concurrency: int = field(default_factory=lambda: integer("SURVEY_CONCURRENCY", 1, 1, 4))
     timeout: int = field(default_factory=lambda: integer("SURVEY_JOB_TIMEOUT", 900, 5, 7200))
     public_origin: str = field(default_factory=lambda: os.getenv("SURVEY_PUBLIC_ORIGIN", "").rstrip("/"))

@@ -20,8 +20,8 @@ def run_pdf(mode, path, number, *limits):
     try:
         engine_python = os.getenv("SURVEY_ENGINE_PYTHON", sys.executable)
         command = [engine_python, "-m", "webapp.pdf_tool", mode, str(path), str(number), *map(str, limits)]
-        result = subprocess.run(command,
-                                cwd=ROOT, capture_output=True, timeout=25)
+        timeout = 120 if mode == "validate" else 25
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         raise HTTPException(422, "The PDF took too long to read. Try a smaller or freshly scanned file.") from None
     except OSError:

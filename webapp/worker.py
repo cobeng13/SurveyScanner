@@ -42,14 +42,17 @@ def worker_lock(path):
         yield
 
 
-def run_engine(settings, input_dir, output_dir, log_path, stop):
+def run_engine(settings, input_dir, output_dir, log_path, stop, *, deadline=None):
+    if deadline is None:
+        deadline = time.monotonic() + settings.timeout
+    if time.monotonic() >= deadline:
+        raise TimeoutError("Recognition reached its time limit.")
     env = dict(os.environ, MPLBACKEND="Agg", MPLCONFIGDIR=str(log_path.parent / "matplotlib"),
                OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", PYTHONDONTWRITEBYTECODE="1")
     engine_python = os.getenv("SURVEY_ENGINE_PYTHON", sys.executable)
     cmd = [engine_python, "-m", "webapp.headless", "-i", str(input_dir), "-o", str(output_dir)]
     with log_path.open("wb") as log:
         child = subprocess.Popen(cmd, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
-        deadline = time.monotonic() + settings.timeout
         try:
             while child.poll() is None:
                 if stop.wait(0.25):
@@ -110,10 +113,12 @@ def live_counts(data, batch):
     return len(statuses), len(statuses) - failed, failed
 
 
-def normalize(batch, bundle, output, folder):
+def normalize(batch, bundle, output, folder, page_numbers=None):
     indexed = read_engine(output)
     pages = []
-    for page in range(1, batch["total"] + 1):
+    if page_numbers is None:
+        page_numbers = range(1, batch["total"] + 1)
+    for page in page_numbers:
         file_id = page_name(page, batch["total"])
         status, raw = indexed.get(file_id, ("Failed", {}))
         warnings = {}

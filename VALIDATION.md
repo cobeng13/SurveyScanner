@@ -1,5 +1,9 @@
 # Validation results
 
+## Expanded upload limits
+
+A local ASGI run uploaded an exact 500 MiB, 200-page PDF made from the physical fixture. The CSV contained 200 ordered rows and matched all 8,200 expected response fields. The request cleaned up its temporary files. Five app regression tests passed, including CSV and Word generation, and separate checks rejected 201 pages and a 501 MiB request. The updated Docker deployment still needs a smoke test on apps-server.
+
 ## Word summary
 
 Four focused web tests passed, including the physical-scan CSV and DOCX downloads, all six verbal interpretation boundaries, the first CILO vote counts, the GiftToExam chair mapping, and the unchanged template package parts. Word rendering confirmed two 8.5 × 13 inch pages with a long course title, all four interpretations and eight populated CILOs. A Python 3.10 Linux wheel was retrieved for the pinned lxml dependency. The updated Docker image has not yet been tested on apps-server.

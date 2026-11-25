@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 from tempfile import TemporaryDirectory
 from threading import BoundedSemaphore, Event
+import time
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException, Request
@@ -30,6 +31,7 @@ WEB = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=WEB / "templates")
 LOG = logging.getLogger("survey.stateless")
 SUMMARY_TEMPLATE = ROOT / "Course_feedback_summary.docx"
+RECOGNITION_CHUNK_PAGES = 20
 
 
 class UploadLimit:
@@ -138,19 +140,37 @@ def process_upload(settings, upload, metadata=None):
         filename, _, total = stage_pdf(upload, staged / "scan.pdf", settings)
         for name in ("template.json", "config.json", "lpu_fiducial.png"):
             shutil.copyfile(settings.bundle.path / name, staged / name)
-        output = folder / "output"
-        try:
-            status = run_engine(settings, staged, output, folder / "recognition.log", Event())
-        except TimeoutError:
-            raise HTTPException(504, "Recognition timed out. Try a smaller PDF.") from None
-        if status:
-            LOG.error("survey_recognition_failed exit=%s", status)
-            raise HTTPException(422, "Recognition could not finish. Check the scan and try again.")
-
-        page_results = normalize({"id": "upload", "total": total}, settings.bundle, output, folder)
+        page_results = recognize_pages(settings, staged, folder, total)
         if metadata is not None:
             return generate_report(SUMMARY_TEMPLATE, settings.bundle, page_results, metadata)
         return format_csv(filename, page_results, settings.bundle)
+
+
+def recognize_pages(settings, staged, folder, total):
+    batch = {"id": "upload", "total": total}
+    output = folder / "output"
+    config_path = staged / "config.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    results = []
+    stop = Event()
+    deadline = time.monotonic() + settings.timeout
+    # The native loader buffers the selected page rasters in memory.
+    for first in range(1, total + 1, RECOGNITION_CHUNK_PAGES):
+        last = min(first + RECOGNITION_CHUNK_PAGES - 1, total)
+        if total > RECOGNITION_CHUNK_PAGES:
+            config["pdf_params"]["pdf_page"] = f"{first}-{last}"
+            config_path.write_text(json.dumps(config), encoding="utf-8")
+        try:
+            status = run_engine(settings, staged, output, folder / "recognition.log", stop, deadline=deadline)
+        except TimeoutError:
+            raise HTTPException(504, "Recognition timed out. Try a smaller PDF.") from None
+        if status:
+            LOG.error("survey_recognition_failed pages=%s-%s exit=%s", first, last, status)
+            raise HTTPException(422, "Recognition could not finish. Check the scan and try again.")
+        results.extend(normalize(batch, settings.bundle, output, folder, range(first, last + 1)))
+        if output.exists():
+            shutil.rmtree(output)
+    return results
 
 
 def format_csv(filename, pages, bundle):

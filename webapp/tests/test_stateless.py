@@ -100,3 +100,22 @@ class CsvOnlyTests(TestCase):
         self.assertEqual(["".join(cell.xpath(".//w:t/text()", namespaces=NS)) for cell in cilo01],
                          [str(int(expected["CILO01"] == choice))
                           for choice in ("Attained", "Needs Improvement", "Not Attained")])
+
+
+    def test_csv_batches_keep_original_page_numbers(self):
+        if SOURCE is None:
+            self.skipTest("Set SURVEY_OMR_SOURCE to the validated OMRChecker checkout")
+        source = SOURCE / "lpu-survey" / "results" / "verification" / "multipage_pdf"
+        settings = Settings()
+        self.assertEqual((settings.max_mb, settings.max_pages, settings.max_raster_mp), (500, 200, 2800))
+        with (source / "recognition" / "responses.csv").open(encoding="utf-8-sig") as stream:
+            expected = list(DictReader(stream))
+        with patch("webapp.stateless.RECOGNITION_CHUNK_PAGES", 1):
+            with TestClient(create_app(settings), base_url="http://192.168.0.226:8008") as client:
+                result = client.post("/process", files={"scan": ("test.pdf", (source / "scans" / "batch.pdf").read_bytes())})
+        self.assertEqual(result.status_code, 200)
+        rows = list(DictReader(StringIO(result.content.decode("utf-8-sig"))))
+        self.assertEqual([row["Source PDF page number"] for row in rows], ["1", "2"])
+        for row, baseline in zip(rows, expected):
+            self.assertEqual([row[key] for key in settings.bundle.fields],
+                             [baseline[key] for key in settings.bundle.fields])

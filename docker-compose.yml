@@ -5,15 +5,12 @@ services:
     container_name: survey-scanner-csv
     init: true
     restart: unless-stopped
-    read_only: true
-    tmpfs:
-      - /tmp:size=256m,mode=1777
     ports:
       - "${SURVEY_BIND_ADDRESS:-127.0.0.1}:${SURVEY_HOST_PORT:-8008}:8008"
     environment:
-      SURVEY_MAX_UPLOAD_MB: ${SURVEY_MAX_UPLOAD_MB:-50}
-      SURVEY_MAX_PAGES: ${SURVEY_MAX_PAGES:-40}
-      SURVEY_MAX_RASTER_MP: ${SURVEY_MAX_RASTER_MP:-420}
+      SURVEY_MAX_UPLOAD_MB: ${SURVEY_MAX_UPLOAD_MB:-500}
+      SURVEY_MAX_PAGES: ${SURVEY_MAX_PAGES:-200}
+      SURVEY_MAX_RASTER_MP: ${SURVEY_MAX_RASTER_MP:-2800}
       SURVEY_JOB_TIMEOUT: ${SURVEY_JOB_TIMEOUT:-900}
       SURVEY_CONCURRENCY: ${SURVEY_CONCURRENCY:-1}
       SURVEY_PUBLIC_ORIGIN: ${SURVEY_PUBLIC_ORIGIN:-}

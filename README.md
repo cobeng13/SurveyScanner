@@ -17,7 +17,7 @@ For a fresh setup, clone `https://github.com/cobeng13/SurveyScanner.git` under `
 
 ```bash
 docker run -d --name survey-scanner-csv --restart unless-stopped --init \
-  -p 192.168.0.226:8008:8008 --read-only --tmpfs /tmp:size=256m,mode=1777 \
+  -p 192.168.0.226:8008:8008 \
   survey-scanner:local
 
 curl -fsS http://192.168.0.226:8008/health
@@ -40,15 +40,15 @@ Print the official PDF single-sided on 8.5 × 13 in. paper at actual size. Scan 
 
 | Environment variable | Default | Purpose |
 | --- | --- | --- |
-| `SURVEY_MAX_UPLOAD_MB` | 50 | Upload limit in MiB. |
-| `SURVEY_MAX_PAGES` | 40 | Pages per upload. |
-| `SURVEY_MAX_RASTER_MP` | 420 | Maximum total raster area in megapixels. |
+| `SURVEY_MAX_UPLOAD_MB` | 500 | Upload limit in MiB. |
+| `SURVEY_MAX_PAGES` | 200 | Pages per upload. |
+| `SURVEY_MAX_RASTER_MP` | 2800 | Maximum total raster area in megapixels. |
 | `SURVEY_JOB_TIMEOUT` | 900 | Engine timeout in seconds. |
 | `SURVEY_CONCURRENCY` | 1 | Simultaneous uploads and recognitions. |
 | `SURVEY_PUBLIC_ORIGIN` | Empty | Optional exact public origin for browser uploads. |
 | `SURVEY_ROOT_PATH` | Empty | Optional prefix stripped by the reverse proxy. |
 
-Raise temporary space and check server memory before increasing the upload or concurrency limits. The original form, fixed question mapping and alignment assets remain in the [immutable template bundle](webapp/bundles/lpu-v1/manifest.json). The separate batch-review workflow remains in the source tree and is outside the Docker deployment.
+The app processes up to 20 pages at a time to limit raster memory. The browser waits for the complete result. Use disk-backed temporary space with at least 2 GiB available per concurrent upload. The Docker command above uses the container’s writable layer and clears request files after processing. The original form, fixed question mapping and alignment assets remain in the [immutable template bundle](webapp/bundles/lpu-v1/manifest.json). The separate batch-review workflow remains in the source tree and is outside the Docker deployment.
 
 ## Verification
 
